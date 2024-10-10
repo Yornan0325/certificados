@@ -1,0 +1,60 @@
+import type { User } from "firebase/auth";
+
+interface UserType {
+  id: number;
+  title: string;
+  surnames: string;
+  age: string;
+  weight: string;
+  email: string;
+  img: string;
+  content: string;
+  phone: string;
+  registrationDate: string;
+}
+
+interface ModalType {
+  close: () => void;
+  isOpen: boolean;
+  open: () => void;
+}
+interface InputFormProps {
+  modal: ModalType;
+  userDataforId: UserType | null;
+  loading: boolean;
+  userId: number;
+  addUser: (userData: UserType) => void;
+  updateUser: (userData: UserType) => void;
+  deleteUser: (userId: number) => void;
+  initialData: UserType;
+}
+
+interface ModalDeleteProps {
+  modal: ModalType;
+  userId: number;
+  deleteUser: (userId: number) => void;
+}
+
+interface UserContext {
+  loading: boolean;
+  userAuth: UserAuth | null;
+  userRole: UserRole | null;
+  dataUser: UserType[];
+  updateUserAuth: UpdateUserAuth;
+  updateUserRole: (newRole: UserRole) => void;
+  setDataUser: (data: UserType[]) => void;
+  setLoading: (loading: boolean) => void;
+}
+
+type UpdateUserAuth = (newState: null | User) => void;
+type UserAuth = null | User;
+type UserRole = "admin" | "invitado" | null;
+
+export type {
+  UserContext,
+  UpdateUserAuth,
+  UserType,
+  InputFormProps,
+  ModalType,
+  ModalDeleteProps,
+};
