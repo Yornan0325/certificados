@@ -2,39 +2,43 @@ import { LoginFields } from "./FormModules/formFields";
 import ActionButton from "./FormModules/ActionButton";
 import FormExtra from "./FormModules/FormExtra";
 import FormInput from "./FormModules/FormInput";
-
-import { useHandleAuthLogin } from "../ServicesFirebase/authentication";
 import { useEffect } from "react";
-// import { useUserStore  } from "../Context/context";
+import { useUserStore  } from "../Context/context";
 import { useNavigate } from 'react-router-dom'
+import { useHandleAuthSignIn } from "../Hook/useHandleAuthSignIn";
+import useFormInput from "../Hook/useFormInput";
  
 
 const LoginForm: React.FC<{ LIST_DATA_LOGIN: LoginFields[] }> = ({
   LIST_DATA_LOGIN,
 }) => {
-  const { signIn, handleChange,  input, isLoading } = useHandleAuthLogin();
-  // const { userAuth, userRole } = useUserStore ();
+  const { handleSignIn } = useHandleAuthSignIn();
+  // const {  handleChange,  input, isLoading } = useHandleAuthLogin();
+  const { formValues, isLoading, setIsLoading, setError, error, handleChange } = useFormInput({
+    initialState: { email: "", password: "" },
+  });
+  const { userAuth, userRole } = useUserStore ();
   const navigate = useNavigate();
   
-  const userRole= "admin"
+  // const userRole= "admin"
   // const userRole= "invitado"
   useEffect(() => {
-    // if (userAuth?.email && userRole) {
+    if (userAuth?.email && userRole) {
       if (userRole === "admin") {
         navigate('/admin')
       } else if (userRole === "invitado") {
         navigate('/invitado')
       } else {
-        navigate('/login')
+        navigate('/')
       }
-    // }
-  }, [userRole, navigate]);
+    }
+  }, [userRole, navigate, userAuth?.email]);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await signIn(input.email, input.password);
+    await handleSignIn(formValues.email, formValues.password,setIsLoading,setError);
   };
-console.log("email",input.email)
+// console.log("email",input.email)
   return (
     <form onSubmit={handleLogin}>
       <div>
@@ -52,7 +56,7 @@ console.log("email",input.email)
               key={id}
               name={name}
               type={type}
-              value={input[name] || ""}
+              value={formValues[name] || ""}
               placeholder={placeholder}
               autoComplete={autoComplete}
               isRequired={isRequired}
@@ -62,7 +66,8 @@ console.log("email",input.email)
             />
           )
         )}
-        {/* {loginError && <div className="text-blue-700">{loginError}</div>} */}
+
+        {error && <div className="text-blue-700">{error}</div>}
         
       </div>
 

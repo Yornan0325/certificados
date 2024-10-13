@@ -12,10 +12,10 @@ const PrivateRoute: React.FC<Props> = ({ children, role = [] }) => {
   const { userAuth, userRole } = useUserStore();
   
   if (!userAuth?.email) {
-    return <Navigate replace to="/login" />;
+    return <Navigate replace to="/" />;
   }
   if (!userAuth || !userRole || !role.includes(userRole)) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
   return <>{children}</>;
 };
