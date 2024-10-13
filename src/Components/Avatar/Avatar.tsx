@@ -2,15 +2,13 @@ import React from "react";
 import Logo from "./Logo";
 
 
-
-// Utiliza la desestructuración en la firma de la función del componente
-const Avatar: React.FC<{ dimention: string, logoUrl:string }> = ({ dimention, logoUrl }) => {
+const Avatar: React.FC<{ dimention: string, logoImage:string }> = ({ dimention, logoImage }) => {
  
 
   return (
     <div className="flex items-center justify-center">
       <div className="rounded-full overflow-hidden bg-white">
-        <Logo dimention={dimention} logoUrl={logoUrl} />
+        <Logo dimention={dimention} logoUrl={logoImage} />
       </div>
     </div>
   );

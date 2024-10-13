@@ -1,6 +1,6 @@
 import Header from "../UserForm/FormModules/Header";
 import Avatar from "../Components/Avatar/Avatar";
-import logoUrl from "../Components/Imagenes/logoUrl.jpeg";
+import logoImage from "../Components/Imagenes/logoImage.jpeg";
 import fondo from "../Components/Imagenes/fondo.jpeg";
 import { LIST_DATA_SIGNUP } from "../UserForm/FormModules/formFields";
 import SignUpForm from "../UserForm/SignUpForm";
@@ -19,7 +19,7 @@ export const SignUpPage: React.FC = () => {
             <div className="absolute object-cover z-0 inset-0 w-full h-auto bg-black from-black/80 via-black/50 opacity-60"></div>
             <div className="flex items-center justify-center  w-28 h-28 my-8 mx-4  rounded-full border-2 border-white  object-center    ">
               <div className="w-24 h-24 rounded-full overflow-hidden relative items-center justify-center  bg-white">
-                <Avatar dimention={"w-24 h-24 "} logoUrl={logoUrl} />
+                <Avatar dimention={"w-24 h-24 "} logoImage={logoImage} />
               </div>
             </div>
           </div>

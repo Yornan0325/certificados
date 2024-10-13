@@ -3,9 +3,9 @@ import { auth } from "../ServicesFirebase/firebase";
  
 
  
-export const useHandleAuthLogin = () => {
+export const useHandleAuthSigOut= () => {
   // Cerrar el inicio de sesión 
-  const logOut = async () => {
+  const signOutSesion = async () => {
     try {
       await signOut(auth);
     } catch (error) {
@@ -13,6 +13,6 @@ export const useHandleAuthLogin = () => {
     }
   };
 
-  return { logOut };
+  return { signOutSesion };
 };
   

@@ -1,18 +1,18 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { LoginPage } from "./Pages/LoginPage";
-import { SignUpPage } from "./Pages/SignupPage";
+import { SignUpPage } from "./Pages/SignUpPage";
 import { HomePage } from "./Pages/HomePage";
 import { useHandleUser } from "./Hook/useUser";
 import { PrivateRoute } from "./RestrictedAccess/PrivateRoute";
-import { useHandleAuthLogin } from "./Hook/useHandleAuthLogOut";
+import { useHandleAuthSigOut } from "./Hook/useHandleAuthSigOut";
 
 const App: React.FC = () => {
   useHandleUser();
   // useDataUsers();
-  const { logOut } = useHandleAuthLogin();
+  const { signOutSesion } = useHandleAuthSigOut();
 
   const handleLogOut = async () => {
-    await logOut();
+    await signOutSesion();
     // Puedes redirigir al usuario a la página de login o landing después de cerrar sesión, si es necesario
     // Por ejemplo, utilizando react-router: navigate("/login")
   };
