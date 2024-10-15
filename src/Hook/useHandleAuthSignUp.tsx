@@ -1,28 +1,29 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../ServicesFirebase/firebase";
-import {  doc, setDoc } from "firebase/firestore"; // Para guardar en Firestore
+import { doc, setDoc } from "firebase/firestore"; // Para guardar en Firestore
 import { FirebaseError } from "firebase/app";
 
- 
 export const useHandleAuthSignUp = () => {
   // Creación de nuevos usuarios en Firebase
-  const handleSignUp = async (email: string, password: string, name:string, setIsLoading: (loading: boolean) => void, setError: (error: string) => void) => {
+  const handleSignUp = async (
+    email: string,
+    password: string,
+    username: string,
+    setIsLoading: (loading: boolean) => void,
+    setError: (error: string) => void
+  ) => {
     setIsLoading(true);
     setError("");
-
+    const userRole = "invitado";
     try {
-        createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      // const user = userCredential.user;
-      // Crea un nuevo usuario con correo y contraseña en Firebase
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Crea un nuevo documento en Firestore usando el email como ID
       await setDoc(doc(db, "usuarios", email), {
+        createdAt: new Date(),
         email: email,
-        role:"invitado",
-        name: name,  
-        createdAt: new Date(),  
+        role: userRole,
+        name: username,
+        uid: userCredential.user.uid, // Guarda el UID del usuario
       });
 
       setIsLoading(false);

@@ -21,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({
             </h2>
             <p className="mt-4 text-center text-sm text-white">
                 {paragraph} {' '}
-                <Link to={linkUrl} className="ml-2 font-medium text-purple-600 hover:text-purple-900">
+                <Link to={linkUrl} className="ml-2 font-medium text-blue-300 hover:text-blue-500">
                     {linkName}
                 </Link>
             </p>

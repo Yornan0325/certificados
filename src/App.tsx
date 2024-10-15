@@ -34,7 +34,7 @@ const App: React.FC = () => {
         element={
           <PrivateRoute role={["invitado"]}>
             <button onClick={handleLogOut} className="btn btn-logout">
-              Cerrar sesión
+              Salir
             </button>
             <h1 className="mx-12 my-12 bg-red-500">Invitado</h1>
             {/* <SignOutButton/>  */}

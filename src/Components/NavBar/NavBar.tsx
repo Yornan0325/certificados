@@ -2,6 +2,7 @@ import Avatar from "../Avatar/Avatar";
 import SignOutButton from "../SignOutButton/SignOutButton";
 import logoImage from "../../Components/Imagenes/logoImage.jpeg";
 // import ButtonNewUser from "../NewUser/ButtonNewUser";
+// import { useUserData } from '../../Hook/useUserDataFromFirestore';
 
 import {
   Disclosure,
@@ -14,6 +15,9 @@ import {
   Transition,
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useUserStore } from "../../Context/context";
+ 
+ 
 
 type Props = {
   name: string;
@@ -24,27 +28,34 @@ type Props = {
 };
 
 const NavBar = ({ imgUser, name, dimention, logoState, showItem }: Props) => {
+ 
+  const dataUser = useUserStore((state) => state.dataUser);
+ 
   // const [isOpen, setIsOpen] = useState(false);
+ 
+ 
 
   const navigation = [{ name: "Nuevo", href: "#", current: false }];
-
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
-
+  
+  const user = dataUser[0]; 
   return (
     <div>
-      <Disclosure as="nav" className="bg-gray-800">
+      <Disclosure as="nav" className="bg-gray-400">
         {({ open }) => (
           <>
-            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-2">
               <div className="relative flex h-16 items-center justify-between">
                 {logoState ? (
                   <div className="flex items-center gap-2">
                     <Avatar dimention={dimention} logoImage={logoImage} />
                     <div className="hidden md:block">
                       <div className="mx-2">
-                        <h2 className="text-xl text-neutral-100">{name}</h2>
+                        <h2 className="block text-2xl text-opacity-50  text-black font-bold">
+                          {name}
+                        </h2>
                       </div>
                     </div>
                   </div>
@@ -92,7 +103,7 @@ const NavBar = ({ imgUser, name, dimention, logoState, showItem }: Props) => {
                   </div> */}
                   {/* Imagen del usuario */}
 
-                  {/* Profile dropdown */}
+                  {/* Menú desplegable de perfil en pantalla grande */}
                   <Menu as="div" className="relative ml-3">
                     <div>
                       <MenuButton className="relative hidden lg:block md:block   rounded-full bg-gray-800 text-sm  ">
@@ -105,7 +116,7 @@ const NavBar = ({ imgUser, name, dimention, logoState, showItem }: Props) => {
                         />
                       </MenuButton>
                     </div>
-
+ 
                     <Transition
                       enter="transition ease-out duration-100"
                       enterFrom="transform opacity-0 scale-95"
@@ -114,21 +125,22 @@ const NavBar = ({ imgUser, name, dimention, logoState, showItem }: Props) => {
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-95"
                     >
-                      <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        {/* <MenuItem>
+                      <MenuItems className="grid grid-cols-1 divide-y absolute right-0 z-10 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <MenuItem>
                           {({ focus }) => (
-                            <a
-                              href="#"
+                            <div
+                              
                               className={classNames(
-                                focus ? "bg-gray-100" : "",
+                                focus ? "block" : "",
                                 "block px-4 py-2 text-sm text-gray-700"
                               )}
                             >
-                              <ButtonNewUser title="Nuevo" />
-                            </a>
+                             <p> {user.email}</p>
+                             <p> {user.name}</p>
+                            </div>
                           )}
-                        </MenuItem> */}
-
+                        </MenuItem>
+                   
                         <MenuItem>
                           {({ focus }) => (
                             <div
@@ -137,9 +149,7 @@ const NavBar = ({ imgUser, name, dimention, logoState, showItem }: Props) => {
                                 "p-2 pb-2 text-sm text-gray-700"
                               )}
                             >
-                              {showItem && (
-                                <SignOutButton title="Cerrar sesion" />
-                              )}
+                              {showItem && <SignOutButton title="Salir" />}
                             </div>
                           )}
                         </MenuItem>

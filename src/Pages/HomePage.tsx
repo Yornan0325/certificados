@@ -3,12 +3,7 @@ import NavBar from "../Components/NavBar/NavBar";
 // import { useHandleAuthSigOut } from "../Hook/useHandleAuthSigOut";
 
 export const HomePage = () => {
-  // const { signOutSesion } = useHandleAuthSigOut();
-
-  // const handleLogOut = async () => {
-  //   await signOutSesion();
-   
-  // };
+ 
   return (
     <>
     <NavBar

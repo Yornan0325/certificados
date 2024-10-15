@@ -7,7 +7,7 @@ const Avatar: React.FC<{ dimention: string, logoImage:string }> = ({ dimention, 
 
   return (
     <div className="flex items-center justify-center">
-      <div className="rounded-full overflow-hidden bg-white">
+      <div className="rounded-full overflow-hidden bg-white ">
         <Logo dimention={dimention} logoUrl={logoImage} />
       </div>
     </div>

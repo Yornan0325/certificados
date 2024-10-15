@@ -12,7 +12,7 @@ const SignOutButton: React.FC<SignOutButtonProps>  = ({title}) => {
 return(
   <div className="flex items-center" onClick={signOutSesion} >
     <Icon path={mdiExitRun} size={1} />
-    <span className="cursor-pointer">{title}</span>
+    <span className="cursor-pointer text-xl mx-2">{title}</span>
   </div>
 )};
 

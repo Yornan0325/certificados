@@ -11,10 +11,11 @@ interface LogoProps {
           alt="Logo"
           className={
             dimention +
-            " group-hover:w-12 group-hover:h-12 sm:justify-center object-center object-cover rounded-full transition-all duration-500 delay-500 transform"
+            "  lg:justify-center object-center object-fill  transition-all duration-500   transform"
           }
         />
       </>
+        //  "lg:justify-center object-center  transition-all duration-500   transform"
     );
   };
   
