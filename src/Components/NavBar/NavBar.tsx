@@ -16,8 +16,6 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useUserStore } from "../../Context/context";
- 
- 
 
 type Props = {
   name: string;
@@ -28,19 +26,20 @@ type Props = {
 };
 
 const NavBar = ({ imgUser, name, dimention, logoState, showItem }: Props) => {
- 
-  const dataUser = useUserStore((state) => state.dataUser);
- 
+  // const dataUser = useUserStore((state) => state.dataUser);
+  const { dataUser } = useUserStore();
   // const [isOpen, setIsOpen] = useState(false);
- 
- 
+  console.log("dataUser", dataUser);
 
   const navigation = [{ name: "Nuevo", href: "#", current: false }];
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
-  
-  const user = dataUser[0]; 
+  // if (loading) {
+  //   return <p>Cargando datos...</p>;
+  // }
+
+  // const user = dataUser[0];
   return (
     <div>
       <Disclosure as="nav" className="bg-gray-400">
@@ -116,7 +115,7 @@ const NavBar = ({ imgUser, name, dimention, logoState, showItem }: Props) => {
                         />
                       </MenuButton>
                     </div>
- 
+
                     <Transition
                       enter="transition ease-out duration-100"
                       enterFrom="transform opacity-0 scale-95"
@@ -129,18 +128,22 @@ const NavBar = ({ imgUser, name, dimention, logoState, showItem }: Props) => {
                         <MenuItem>
                           {({ focus }) => (
                             <div
-                              
                               className={classNames(
                                 focus ? "block" : "",
                                 "block px-4 py-2 text-sm text-gray-700"
                               )}
                             >
-                             <p> {user.email}</p>
-                             <p> {user.name}</p>
+                              {dataUser.map((user) => (
+                                <div key={user.uid}>
+                                  <p>Correo: {user.email}</p>
+                                  <p>Nombre: {user.name}</p>
+                                  <p>Rol: {user.role}</p>
+                                </div>
+                              ))}
                             </div>
                           )}
                         </MenuItem>
-                   
+
                         <MenuItem>
                           {({ focus }) => (
                             <div

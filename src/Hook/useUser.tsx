@@ -23,13 +23,10 @@ const useSuscribeToAuthState = (updateUserAuth: UpdateUserAuth) => {
 
 const useHandleUser = () => {
   const { updateUserAuth, updateUserRole, userAuth } = useUserStore();
-
-  // Suscribre to auth state: Authenticaion
+  // Suscribirse al estado de autenticación: Autenticación
   useSuscribeToAuthState(updateUserAuth);
-
-  // Suscribe to user state: Firestore
+  // Suscríbete al estado de usuario: Firestore
   useEffect(() => {
-    // check if user exists
     if (!userAuth?.email) return;
 
     const unsubscribe = onSnapshot(
