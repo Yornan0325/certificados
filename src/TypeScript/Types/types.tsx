@@ -1,16 +1,11 @@
 import type { User } from "firebase/auth";
 
 interface UserType {
-  id: number;
-  title: string;
-  surnames: string;
-  age: string;
-  weight: string;
-  email: string;
-  img: string;
-  content: string;
-  phone: string;
-  registrationDate: string;
+  createdAt:Date
+  email:string
+  name:string
+  role:string
+  uid:string
 }
 
 interface ModalType {
@@ -42,7 +37,7 @@ interface UserContext {
   dataUser: UserType[];
   updateUserAuth: UpdateUserAuth;
   updateUserRole: (newRole: UserRole) => void;
-  setDataUser: (data: UserType[]) => void;
+  setDataUser: (data: UserType[]) => void; 
   setLoading: (loading: boolean) => void;
 }
 

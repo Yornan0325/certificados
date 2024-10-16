@@ -2,7 +2,7 @@ const FormExtra = () => {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center">
-        <input
+        {/* <input
           id="remember-me"
           name="remember-me"
           type="checkbox"
@@ -10,13 +10,13 @@ const FormExtra = () => {
         />
         <label htmlFor="remember-me" className="ml-2 block text-sm text-white">
           Acuérdate de mí
-        </label>
+        </label> */}
       </div>
 
       <div className="text-sm ml-12">
         <a
           href="#"
-          className="font-medium text-purple-600 hover:text-purple-500"
+          className="font-medium text-blue-300 hover:text-blue-500"
         >
           Recuperar contraseña?
         </a>

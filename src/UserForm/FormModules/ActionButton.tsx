@@ -8,17 +8,16 @@ interface ActionButtonProps {
 }
 
 const ActionButton: React.FC<ActionButtonProps> = ({
-  type = "Button",
+  type = "submit",
   text,
   isLoading,
 }) => {
   return (
     <>
-      
-      {type === "Button" ? (
+      {type === "submit" ? (
         <button
           type="submit"
-          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 mt-10"
+          className=" w-full flex justify-center text-white bg-blue-500 hover:text-white border border-gray-800     font-medium   text-xl px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800 rounded-md    hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black mt-10"
         >
           {isLoading ? (
             <div role="status">
@@ -40,7 +39,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
             </svg>
           </div>
           ) : (
-            <div className="text-white">{text}</div>
+            <div>{text}</div>
           )}
         </button>
       ) : (

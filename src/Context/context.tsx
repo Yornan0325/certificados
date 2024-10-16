@@ -12,5 +12,5 @@ const useUserStore  = create<UserContext>(set => ({
     // loadInitialData: data => set({ dataUser: data, loading: false }),
     setLoading: (loading) => set({ loading }),
   }))
-
+ 
 export {useUserStore }
