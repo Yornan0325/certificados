@@ -29,7 +29,7 @@ const NavBar = ({ imgUser, name, dimention, logoState, showItem }: Props) => {
   // const dataUser = useUserStore((state) => state.dataUser);
   const { dataUser } = useUserStore();
   // const [isOpen, setIsOpen] = useState(false);
-  console.log("dataUser", dataUser);
+  // console.log("dataUser", dataUser);
 
   const navigation = [{ name: "Nuevo", href: "#", current: false }];
   function classNames(...classes: string[]) {
@@ -103,6 +103,11 @@ const NavBar = ({ imgUser, name, dimention, logoState, showItem }: Props) => {
                   {/* Imagen del usuario */}
 
                   {/* Menú desplegable de perfil en pantalla grande */}
+                  <ul className="flex items-center space-x-6">
+                    <li className="font-semibold text-gray-700">
+                      Proyecto
+                    </li>
+                  </ul>
                   <Menu as="div" className="relative ml-3">
                     <div>
                       <MenuButton className="relative hidden lg:block md:block   rounded-full bg-gray-800 text-sm  ">

@@ -6,6 +6,9 @@ import { useGetDataFromFirestore } from "./Hook/useGetDataFromFirestore";
 import { PrivateRoute } from "./RestrictedAccess/PrivateRoute";
 import { useHandleAuthSigOut } from "./Hook/useHandleAuthSigOut";
 import { useHandleUser } from "./Hook/useUser";
+import StaffList from "./Components/UserHome/StaffList";
+import { useUserStore } from "./Context/context";
+
 // import { useHandleUser } from "./Hook/useUser";
 
 const App: React.FC = () => {
@@ -16,7 +19,8 @@ const App: React.FC = () => {
  
   // useDataUsers();
   const { signOutSesion } = useHandleAuthSigOut();
-
+  const { dataUser } = useUserStore();
+  const role = dataUser[0]?.role || 'defaultRole';
   const handleLogOut = async () => {
     await signOutSesion();
     // Puedes redirigir al usuario a la página de login o landing después de cerrar sesión, si es necesario
@@ -27,6 +31,8 @@ const App: React.FC = () => {
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/registro" element={<SignUpPage />} />
+      <Route  path={`/${role}/user/:routeParams`} element={<StaffList />} />
+      
       <Route
         path="/admin"
         element={

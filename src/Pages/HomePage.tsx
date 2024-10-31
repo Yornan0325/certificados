@@ -1,7 +1,7 @@
 import HeaderText from "../Components/HeaderText/HeaderText";
 import NavBar from "../Components/NavBar/NavBar";
 // import { useHandleAuthSigOut } from "../Hook/useHandleAuthSigOut";
-
+import Card from "../Components/UserHome/Card"
 export const HomePage = () => {
  
   return (
@@ -14,6 +14,7 @@ export const HomePage = () => {
       showItem={true}
     />
     <HeaderText title="Usuarios" />
+    <Card/>
     </>
   );
 };

@@ -23,7 +23,11 @@ interface InputFormProps {
   deleteUser: (userId: number) => void;
   initialData: UserType;
 }
-
+interface ProjectType {
+  icon: string;
+  title: string;
+  number: number;
+}
 interface ModalDeleteProps {
   modal: ModalType;
   userId: number;
@@ -35,10 +39,12 @@ interface UserContext {
   userAuth: UserAuth | null;
   userRole: UserRole | null;
   dataUser: UserType[];
+  projects:ProjectType[]
   updateUserAuth: UpdateUserAuth;
   updateUserRole: (newRole: UserRole) => void;
   setDataUser: (data: UserType[]) => void; 
   setLoading: (loading: boolean) => void;
+  setProjects: (projectsData: ProjectType[]) => void;
 }
 
 type UpdateUserAuth = (newState: null | User) => void;
@@ -52,4 +58,5 @@ export type {
   InputFormProps,
   ModalType,
   ModalDeleteProps,
+  ProjectType
 };
