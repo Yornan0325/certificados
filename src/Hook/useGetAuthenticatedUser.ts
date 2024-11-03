@@ -6,8 +6,10 @@ import { useUserStore } from "../Context/context"; // Importa tu contexto correc
 import { onAuthStateChanged } from "firebase/auth";
 
 // Hook personalizado para obtener los datos del usuario autenticado desde Firestore
-export const useGetDataFromFirestore = () => {
-  const setDataUser = useUserStore((state) => state.setDataUser); // Trae la función del contexto
+export const useGetAuthenticatedUser = () => {
+  const setDataAuthenticatedUser = useUserStore((state) => state.setDataAuthenticatedUser); // Trae la función del contexto
+  
+   
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export const useGetDataFromFirestore = () => {
             };
 
             // Usamos setDataUser del contexto para actualizar el estado global
-            setDataUser([formattedUserData]);
+            setDataAuthenticatedUser([formattedUserData]);
           } else {
             console.log("No se encontraron datos para el usuario.");
           }
@@ -47,7 +49,7 @@ export const useGetDataFromFirestore = () => {
     });
 
     return () => unsubscribe(); // Limpia el listener cuando se desmonte el componente
-  }, [setDataUser]);
+  }, [setDataAuthenticatedUser]);
 
   return { loading }; // Devuelve el estado de carga para mostrar un spinner o similar en el componente
 };

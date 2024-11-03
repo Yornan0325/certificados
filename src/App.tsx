@@ -2,25 +2,23 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { LoginPage } from "./Pages/LoginPage";
 import { SignUpPage } from "./Pages/SignUpPage";
 import { HomePage } from "./Pages/HomePage";
-import { useGetDataFromFirestore } from "./Hook/useGetDataFromFirestore";
+import { useGetAuthenticatedUser } from "./Hook/useGetAuthenticatedUser";
 import { PrivateRoute } from "./RestrictedAccess/PrivateRoute";
 import { useHandleAuthSigOut } from "./Hook/useHandleAuthSigOut";
 import { useHandleUser } from "./Hook/useUser";
 import StaffList from "./Components/UserHome/StaffList";
-import { useUserStore } from "./Context/context";
-
-// import { useHandleUser } from "./Hook/useUser";
+import NewProject from "./Components/NewProject/NewProject";
+ 
 
 const App: React.FC = () => {
   // useUserData()
-  useGetDataFromFirestore()
+  useGetAuthenticatedUser()
   useHandleUser();
-  // useUserDataFromFirestore();
+ 
  
   // useDataUsers();
   const { signOutSesion } = useHandleAuthSigOut();
-  const { dataUser } = useUserStore();
-  const role = dataUser[0]?.role || 'defaultRole';
+
   const handleLogOut = async () => {
     await signOutSesion();
     // Puedes redirigir al usuario a la página de login o landing después de cerrar sesión, si es necesario
@@ -31,8 +29,8 @@ const App: React.FC = () => {
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/registro" element={<SignUpPage />} />
-      <Route  path={`/${role}/user/:routeParams`} element={<StaffList />} />
-      
+      <Route  path="/admin/:routeParams" element={<StaffList />} />
+      <Route  path="/admin/nuevo/:routeParams" element={<NewProject/>} />
       <Route
         path="/admin"
         element={
@@ -53,7 +51,7 @@ const App: React.FC = () => {
           </PrivateRoute>
         }
       />
-      <Route path="*" element={<Navigate to="/login" />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 };

@@ -24,15 +24,17 @@ interface InputFormProps {
   initialData: UserType;
 }
 interface ProjectType {
-  icon: string;
-  title: string;
-  number: number;
+  uid?: string;
+  // [x: string]: string;
+  projectTitle: string;
+  // projectDescription:string
+  // projectNumber:string
 }
-interface ModalDeleteProps {
-  modal: ModalType;
-  userId: number;
-  deleteUser: (userId: number) => void;
-}
+// interface ModalDeleteProps {
+//   modal: ModalType;
+//   userId: number;
+//   deleteUser: (userId: number) => void;
+// }
 
 interface UserContext {
   loading: boolean;
@@ -40,11 +42,17 @@ interface UserContext {
   userRole: UserRole | null;
   dataUser: UserType[];
   projects:ProjectType[]
+ 
   updateUserAuth: UpdateUserAuth;
   updateUserRole: (newRole: UserRole) => void;
-  setDataUser: (data: UserType[]) => void; 
+  setDataAuthenticatedUser: (data: UserType[]) => void; 
   setLoading: (loading: boolean) => void;
   setProjects: (projectsData: ProjectType[]) => void;
+    // Propiedades del modal
+    isModalOpen: boolean;
+    modalContent: React.ReactNode | null;
+    openModal: (content: React.ReactNode) => void;
+    closeModal: () => void;
 }
 
 type UpdateUserAuth = (newState: null | User) => void;
@@ -57,6 +65,6 @@ export type {
   UserType,
   InputFormProps,
   ModalType,
-  ModalDeleteProps,
+  // ModalDeleteProps,
   ProjectType
 };

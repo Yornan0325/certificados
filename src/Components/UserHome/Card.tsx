@@ -28,8 +28,8 @@ const Card: React.FC = () => {
           <CardItem 
             key={index}
             icon={<FaUser />} 
-            title={data.title} 
-            number={data.number} 
+            title={data.projectTitle} 
+             
             role={role}
           />
         ))}

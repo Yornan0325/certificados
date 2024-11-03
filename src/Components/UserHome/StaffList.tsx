@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Search, ChevronDown, FileText, X, Upload, Check } from 'lucide-react';
+import { Search, ChevronDown, FileText, Upload, Check } from 'lucide-react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../ServicesFirebase/firebase'; // Asegúrate de crear este archivo
 import HeaderText from '../HeaderText/HeaderText';
-import NavBar from '../NavBar/NavBar';
+// import NavBar from '../NavBar/NavBar';
+import Modal from '../Modal/Modal';
+import { useUserStore } from '../../Context/context';
 
 interface User {
   id: number;
@@ -14,45 +16,18 @@ interface User {
   estado: string;
 }
 
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-  title: string;
-}
-
-const Modal = ({ isOpen, onClose, children, title }: ModalProps) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-md w-full">
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <button
-            onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-full"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="p-4">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-};
+ 
 
 const UsersTable = () => {
+  const {  openModal } = useUserStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'uploading' | 'success' | 'error' | null>(null);
   // const [uploadProgress, setUploadProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
-
+ 
   const users: User[] = [
     {
       id: 1,
@@ -102,7 +77,7 @@ const UsersTable = () => {
       
       setUploadStatus('success');
       setTimeout(() => {
-        setIsModalOpen(false);
+        openModal(false);
         setUploadStatus(null);
         // setUploadProgress(0);
       }, 1500);
@@ -156,20 +131,21 @@ const UsersTable = () => {
 
   const openUploadModal = (user: User) => {
     setSelectedUser(user);
-    setIsModalOpen(true);
+    openModal(true);
     setUploadStatus(null);
     setErrorMessage('');
   };
-
+//  const  imgUser=""
+//      const name="Certificados"
+//      const logoState="logo"
+//       const dimention="w-12 h-12"
+//      const  showItem=false
   return (
     <> 
-    <NavBar
-      imgUser={""}
-      name="Certificados"
-      logoState="logo"
-      dimention="w-12 h-12"
-      showItem={false}
-    />
+    {/* <NavBar
+    >
+      <p>navbar</p>
+      </NavBar> */}
     <HeaderText title="Pedidos" />
     <div className="p-6 max-w-5xl mx-auto">      
       <div className="flex gap-4 mb-6">
@@ -231,11 +207,7 @@ const UsersTable = () => {
         </table>
       </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Subir Documento"
-      >
+      <Modal>
         {selectedUser && (
           <div className="space-y-4">
             <div className="text-sm text-gray-500">
