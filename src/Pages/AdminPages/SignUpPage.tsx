@@ -1,7 +1,7 @@
 import Header from "../../UserForm/FormModules/Header";
 import Avatar from "../../Components/Avatar/Avatar";
-import logoImage from "../Components/Imagenes/logoImage.jpeg";
-import fondo from "../Components/Imagenes/fondo.jpeg";
+import logoImage from "../../Components/Imagenes/logoImage.jpeg";
+import fondo from "../../Components/Imagenes/fondo.jpeg";
 import { LIST_DATA_SIGNUP } from "../../UserForm/FormModules/formFields";
 import SignUpForm from "../../UserForm/SignUpForm";
 
