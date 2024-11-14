@@ -9,6 +9,7 @@ const useUserStore = create<UserContext>((set) => ({
   projects: [],
   isModalOpen: false,
   modalContent: null,
+  selectedProjectsUid: '',
 
   updateUserAuth: (newState) => set({ userAuth: newState }),
   updateUserRole: (newRole) => set({ userRole: newRole }),
@@ -17,8 +18,10 @@ const useUserStore = create<UserContext>((set) => ({
   setLoading: (loading) => set({ loading }),
   setProjects: (projectsData: ProjectType[]) => set({ projects: projectsData }),
   openModal: (content: React.ReactNode) =>
-    set({ isModalOpen: true, modalContent: content }),
+  set({ isModalOpen: true, modalContent: content }),
   closeModal: () => set({ isModalOpen: false, modalContent: null }),
+  // Seleccionar el proyecto por el uid
+  setSelectedProjectsUid: (uid:string) => set({ selectedProjectsUid: uid }),
 }));
 
 export { useUserStore };

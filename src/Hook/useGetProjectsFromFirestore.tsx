@@ -6,12 +6,13 @@ import { useUserStore } from "../Context/context"; // Contexto para manejar el e
 
 // Hook personalizado para obtener los datos de proyectos desde Firestore
 export const useGetProjectsFromFirestore = () => {
-  const setProjects = useUserStore((state) => state.setProjects); // Función del contexto para actualizar proyectos
-  const [loading, setLoading] = useState<boolean>(true);
+  // Función del contexto para actualizar proyectos
+  const setProjects = useUserStore((state) => state.setProjects);
+  const [loadingProjects, setLoadingProjects] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchProjects = async () => {
-      setLoading(true);
+      setLoadingProjects(true);
       try {
         // Referencia a la colección 'proyectos' en Firestore
         const projectsCollectionRef = collection(db, "proyectos");
@@ -28,12 +29,12 @@ export const useGetProjectsFromFirestore = () => {
       } catch (error) {
         console.error("Error al obtener los datos de los proyectos:", error);
       } finally {
-        setLoading(false);
+        setLoadingProjects(false);
       }
     };
 
     fetchProjects(); // Llamar a la función para obtener los datos
   }, [setProjects]);
 
-  return { loading }; // Devuelve el estado de carga para mostrar un spinner o similar en el componente
+  return { loadingProjects }; // Devuelve el estado de carga para mostrar un spinner o similar en el componente
 };

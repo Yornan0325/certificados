@@ -6,7 +6,7 @@ interface ModalProps {
     title:string
   }
 
-  const Modal = ({children,title}: ModalProps) => {
+  const Modal: React.FC<ModalProps> = ({children,title}) => {
     const { isModalOpen, closeModal } = useUserStore();
     if (!isModalOpen) return null;
 

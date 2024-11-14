@@ -1,9 +1,9 @@
-import Header from "../UserForm/FormModules/Header";
-import Avatar from "../Components/Avatar/Avatar";
+import Header from "../../UserForm/FormModules/Header";
+import Avatar from "../../Components/Avatar/Avatar";
 import logoImage from "../Components/Imagenes/logoImage.jpeg";
 import fondo from "../Components/Imagenes/fondo.jpeg";
-import { LIST_DATA_SIGNUP } from "../UserForm/FormModules/formFields";
-import SignUpForm from "../UserForm/SignUpForm";
+import { LIST_DATA_SIGNUP } from "../../UserForm/FormModules/formFields";
+import SignUpForm from "../../UserForm/SignUpForm";
 
 export const SignUpPage: React.FC = () => {
   return (

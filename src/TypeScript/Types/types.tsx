@@ -1,11 +1,11 @@
 import type { User } from "firebase/auth";
 
 interface UserType {
-  createdAt:Date
-  email:string
-  name:string
-  role:string
-  uid:string
+  createdAt: Date;
+  email: string;
+  name: string;
+  role: string;
+  uid: string;
 }
 
 interface ModalType {
@@ -24,35 +24,39 @@ interface InputFormProps {
   initialData: UserType;
 }
 interface ProjectType {
-  uid?: string;
-  // [x: string]: string;
   projectTitle: string;
-  // projectDescription:string
-  // projectNumber:string
+  uid: string;
 }
-// interface ModalDeleteProps {
-//   modal: ModalType;
-//   userId: number;
-//   deleteUser: (userId: number) => void;
-// }
-
+ 
+interface CertificateType {
+  certificateType: string;
+  person: string;
+  certificateUid: string;
+  nameProject: string;
+  projectUid?: string;
+  state: string;
+  date: string;
+}
 interface UserContext {
   loading: boolean;
   userAuth: UserAuth | null;
   userRole: UserRole | null;
   dataUser: UserType[];
-  projects:ProjectType[]
- 
+  projects: ProjectType[];
+  selectedProjectsUid: string;
+
   updateUserAuth: UpdateUserAuth;
   updateUserRole: (newRole: UserRole) => void;
-  setDataAuthenticatedUser: (data: UserType[]) => void; 
+  setDataAuthenticatedUser: (data: UserType[]) => void;
   setLoading: (loading: boolean) => void;
   setProjects: (projectsData: ProjectType[]) => void;
-    // Propiedades del modal
-    isModalOpen: boolean;
-    modalContent: React.ReactNode | null;
-    openModal: (content: React.ReactNode) => void;
-    closeModal: () => void;
+  // Propiedades del modal
+  isModalOpen: boolean;
+  modalContent: React.ReactNode | null;
+  openModal: (content: React.ReactNode) => void;
+  closeModal: () => void;
+
+  setSelectedProjectsUid: (uid: string) => void;
 }
 
 type UpdateUserAuth = (newState: null | User) => void;
@@ -66,5 +70,6 @@ export type {
   InputFormProps,
   ModalType,
   // ModalDeleteProps,
-  ProjectType
+  ProjectType,
+  CertificateType,
 };

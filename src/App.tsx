@@ -1,7 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { LoginPage } from "./Pages/LoginPage";
-import { SignUpPage } from "./Pages/SignUpPage";
-import { HomePage } from "./Pages/HomePage";
+import { LoginPage } from "./Pages/AdminPages/LoginPage";
+import { SignUpPage } from "./Pages/AdminPages/SignUpPage";
+import { AdminHomePage } from "./Pages/AdminPages/AdminHomePage";
+import { GuestHomePage } from "./Pages/GuestPage/GuestHomePage";
 import { useGetAuthenticatedUser } from "./Hook/useGetAuthenticatedUser";
 import { PrivateRoute } from "./RestrictedAccess/PrivateRoute";
 import { useHandleAuthSigOut } from "./Hook/useHandleAuthSigOut";
@@ -35,7 +36,7 @@ const App: React.FC = () => {
         path="/admin"
         element={
           <PrivateRoute role={["admin"]}>
-            <HomePage />
+            <AdminHomePage />
           </PrivateRoute>
         }
       />
@@ -43,6 +44,7 @@ const App: React.FC = () => {
         path="/invitado"
         element={
           <PrivateRoute role={["invitado"]}>
+             <GuestHomePage />
             <button onClick={handleLogOut} className="btn btn-logout">
               Salir
             </button>

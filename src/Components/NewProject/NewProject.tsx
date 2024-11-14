@@ -15,7 +15,7 @@ const NewProject: React.FC = () => {
   const [selectedProjectUid, setSelectedProjectUid] = useState<string | null>(
     null
   );
-
+ 
   const { createProject, updateProject, loading, error } = useManageProjects();
   // Obtiene todos los proyectos para mostrarlos en el select
   const { projects } = useUserStore();
@@ -26,9 +26,7 @@ const NewProject: React.FC = () => {
     setIsUpdate(mode === "update");
     if (mode === "create") {
       setProjectData({
-        projectTitle: "",
-        // projectDescription: "",
-        // projectNumber: 0,
+        projectTitle: ""
       });
       setSelectedProjectUid(null);
     }

@@ -1,9 +1,9 @@
-import LoginForm from "../UserForm/LoginForm";
-import Header from "../UserForm/FormModules/Header";
-import { LIST_DATA_LOGIN } from "../UserForm/FormModules/formFields";
+import LoginForm from "../../UserForm/LoginForm";
+import Header from "../../UserForm/FormModules/Header";
+import { LIST_DATA_LOGIN } from "../../UserForm/FormModules/formFields";
 import fondo from "../Components/Imagenes/fondo.jpeg";
-import logoImage from "../Components/Imagenes/logoImage.jpeg";
-import Avatar from "../Components/Avatar/Avatar";
+import logoImage from "../../Components/Imagenes/logoImage.jpeg";
+import Avatar from "../../Components/Avatar/Avatar";
 
 export const LoginPage: React.FC = () => {
   return (
