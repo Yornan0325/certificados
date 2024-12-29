@@ -36,8 +36,7 @@ const StaffList = () => {
   useEffect(() => {
     const fetchCertificates = async () => {
       if (!selectedProjectsUid) {
-        // console.log("No hay UID de proyecto seleccionado.");
-        return; // No hacer nada si no hay UID de proyecto
+        return; 
       }
 
       // console.log("UID del proyecto seleccionado:", selectedProjectsUid);
