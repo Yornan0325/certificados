@@ -6,6 +6,7 @@ interface UserType {
   name: string;
   role: string;
   uid: string;
+  check:boolean
 }
 
 interface ModalType {
@@ -29,6 +30,8 @@ interface ProjectType {
 }
  
 interface CertificateType {
+  id: number;
+  startDate: any;
   certificateType: string;
   person: string;
   certificateUid: string;

@@ -24,6 +24,7 @@ export const useHandleAuthSignUp = () => {
         role: userRole,
         name: username,
         uid: userCredential.user.uid, // Guarda el UID del usuario
+        check:false
       });
 
       setIsLoading(false);

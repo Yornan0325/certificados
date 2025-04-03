@@ -30,6 +30,8 @@ export const useGetAuthenticatedUser = () => {
               name: userData.name || "",
               role: userData.role || "",
               uid: user.uid,
+              check:userData.check
+
             };
 
             // Usamos setDataUser del contexto para actualizar el estado global
