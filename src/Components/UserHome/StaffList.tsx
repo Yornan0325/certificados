@@ -99,7 +99,9 @@ const StaffList = () => {
                 <button onClick={() => navigate("/admin/agregar-colaborador")} className="block w-full px-4 py-2 text-left hover:bg-gray-100">
                   Agregar Colaborador
                 </button>
-                <button className="block w-full px-4 py-2 text-left hover:bg-gray-100">Editar Colaborador</button>
+                <button onClick={() => navigate("/admin/editar-colaborador")}className="block w-full px-4 py-2 text-left hover:bg-gray-100">
+                Editar Colaborador
+                </button>
               </div>
             )}
           </div>
