@@ -53,6 +53,7 @@ interface UserContext {
   setDataAuthenticatedUser: (data: UserType[]) => void;
   setLoading: (loading: boolean) => void;
   setProjects: (projectsData: ProjectType[]) => void;
+  
   // Propiedades del modal
   isModalOpen: boolean;
   modalContent: React.ReactNode | null;
@@ -72,6 +73,7 @@ export type {
   UserType,
   InputFormProps,
   ModalType,
+ 
   // ModalDeleteProps,
   ProjectType,
   CertificateType,

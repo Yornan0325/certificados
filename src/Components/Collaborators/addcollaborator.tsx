@@ -9,8 +9,8 @@ const AddCollaborator = () => {
     startDate: "",
     position: "",
     salary: "",
-    isRetired: false, // nuevo campo
-    endDate: "",       // nuevo campo
+    isRetired: false, 
+    endDate: "",       
   });
 
   const [colaboradores, setColaboradores] = useState<any[]>([]);
@@ -40,8 +40,8 @@ const AddCollaborator = () => {
       // Validar campos obligatorios
       for (const key in collaborator) {
         if (
-          key !== "isRetired" && // no requerido
-          key !== "endDate" && // no requerido
+          key !== "isRetired" && 
+          key !== "endDate" && 
           !collaborator[key as keyof typeof collaborator]
         ) {
           alert("Todos los campos son obligatorios.");

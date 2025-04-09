@@ -13,7 +13,7 @@ import RecoverPasswordPage from "./UserForm/FormModules/RecoverPasswordPage";
 import AdminApprovalModal from "./Components/Modal/AdminApprovalModal";
 import { useState } from "react";
 import AddCollaborator from "./Components/Collaborators/addcollaborator";
-import EditCollaborator from "./Components/Collaborators/EditCollaborator"; // 👈 Importación añadida
+import EditCollaborator from "./Components/Collaborators/EditCollaborator"; 
 
 const App: React.FC = () => {
   useGetAuthenticatedUser();

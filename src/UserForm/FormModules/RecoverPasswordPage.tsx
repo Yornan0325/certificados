@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../../ServicesFirebase/firebase"; // Ajusta la ruta si es necesario
+import { auth } from "../../ServicesFirebase/firebase"; 
 import { useNavigate } from "react-router-dom";
 
 const RecoverPasswordPage: React.FC = () => {

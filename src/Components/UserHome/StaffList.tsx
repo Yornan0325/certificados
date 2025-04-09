@@ -57,17 +57,15 @@ const StaffList = () => {
       const fileRef = ref(storage, `certificados/${certificateUid}.pdf`);
 
       try {
-        // 1️⃣ Subir el archivo a Firebase Storage
+
         await uploadBytes(fileRef, file);
         const fileUrl = await getDownloadURL(fileRef);
 
-        // 2️⃣ Actualizar la URL del documento en Firestore
         const docRef = doc(db, "certificados", certificateUid);
         await updateDoc(docRef, {
-          fileUrl, // Guardamos la URL en la BD
+          fileUrl, 
         });
 
-        // 3️⃣ Actualizar el estado local para reflejar los cambios
         setCertificates((prev) =>
           prev.map((cert) =>
             cert.certificateUid === certificateUid ? { ...cert, fileUrl } : cert

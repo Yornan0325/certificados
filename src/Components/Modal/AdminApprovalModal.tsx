@@ -17,7 +17,7 @@ const AdminApprovalModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
     const fetchUsers = async () => {
       const pendingUsers = await getPendingUsers();
-      console.log("Usuarios pendientes:", pendingUsers); // ✅ Depuración
+      console.log("Usuarios pendientes:", pendingUsers); 
       setUsers(pendingUsers);
     };
 

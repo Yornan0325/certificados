@@ -1,4 +1,4 @@
-import { db } from "./firebase"; // Asegúrate de que la ruta es correcta
+import { db } from "./firebase"; 
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 
 // Función para obtener todos los colaboradores
@@ -36,7 +36,7 @@ const verificarDuplicados = async (idNumber: string, fullName: string): Promise<
     return !snapshotName.empty; // Si hay coincidencias, retorna `true`
   } catch (error) {
     console.error("Error al verificar duplicados:", error);
-    return false; // En caso de error, asumir que no hay duplicados para evitar bloqueos
+    return false; // En caso de error asumir que no hay duplicados para evitar bloqueos
   }
 };
 
