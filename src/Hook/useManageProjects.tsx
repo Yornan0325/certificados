@@ -1,8 +1,7 @@
-// useManageProjects.ts
 import { useState } from "react";
 import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../ServicesFirebase/firebase";
-import { ProjectType } from "../TypeScript/Types/types"; // Asegúrate de que la ruta sea correcta
+import { ProjectType } from "../TypeScript/Types/types"; 
 
 const useManageProjects = () => {
   const [loading, setLoading] = useState<boolean>(false);

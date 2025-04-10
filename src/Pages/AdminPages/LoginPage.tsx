@@ -14,7 +14,6 @@ export const LoginPage: React.FC = () => {
             className="absolute bg-cover bg-clip-border bg-center shadow-none inset-0 m-0 h-full w-full object-cover z-0 overflow-hidden rounded-none bg-transparent"
             style={{ backgroundImage: `url(${fondo})` }}
           >
-            {/* <div className="absolute bg-cover bg-clip-border bg-center shadow-none inset-0 m-0 h-full w-full object-cover z-0 overflow-hidden rounded-none bg-transparent bg-[url('https://images.unsplash.com/photo-1550345332-09e3ac987658?auto=format&fit=crop&q=80&w=1887&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]"> */}
             <div className="absolute inset-0 w-full h-full bg-black from-black/80 via-black/50 opacity-60"></div>
             <div className="flex items-center justify-center w-28 h-28 my-8 mx-4 rounded-full border-2 border-white object-center">
               <div className="w-24 h-24 rounded-full overflow-hidden relative bg-white">
