@@ -14,6 +14,7 @@ import AdminApprovalModal from "./Components/Modal/AdminApprovalModal";
 import { useState } from "react";
 import AddCollaborator from "./Components/Collaborators/addcollaborator";
 import EditCollaborator from "./Components/Collaborators/EditCollaborator"; 
+import { Toaster } from "react-hot-toast"; 
 
 const App: React.FC = () => {
   useGetAuthenticatedUser();
@@ -33,17 +34,36 @@ const App: React.FC = () => {
         <Route path="/registro" element={<SignUpPage />} />
         <Route path="/admin/:routeParams" element={<StaffList />} />
         <Route path="/admin/nuevo/:routeParams" element={<NewProject />} />
-        <Route path="/admin/agregar-colaborador" element={<AddCollaborator />} />
-        <Route path="/admin/editar-colaborador" element={<EditCollaborator />} /> {/* 👈 Ruta añadida */}
 
-        <Route path="/admin" element={<PrivateRoute role={["admin"]}><AdminHomePage /></PrivateRoute>} />
-        <Route path="/invitado" element={<PrivateRoute role={["invitado"]}><GuestHomePage /></PrivateRoute>} />
+        <Route path="/admin/agregar-colaborador/:proyectoID" element={<AddCollaborator />} />
+        <Route path="/admin/editar-colaborador/:proyectoID" element={<EditCollaborator />} />
+
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute role={["admin"]}>
+              <AdminHomePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/invitado"
+          element={
+            <PrivateRoute role={["invitado"]}>
+              <GuestHomePage />
+            </PrivateRoute>
+          }
+        />
 
         <Route path="/recuperar-contraseña" element={<RecoverPasswordPage />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 
-      {isModalOpen && <AdminApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && (
+        <AdminApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      )}
+
+      <Toaster position="top-right" /> 
     </>
   );
 };

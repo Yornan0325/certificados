@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { agregarColaborador, obtenerColaboradores } from "../../ServicesFirebase/colaboradoresService";
+import { useParams } from "react-router-dom";
+import {agregarColaboradorAProyecto,obtenerColaboradoresPorProyecto,} from "../../ServicesFirebase/colaboradoresService";
+import { toast } from "react-hot-toast"; 
 
 const AddCollaborator = () => {
+  const { proyectoID } = useParams<{ proyectoID: string }>();
+
   const [collaborator, setCollaborator] = useState({
     contractType: "",
     fullName: "",
@@ -9,16 +13,18 @@ const AddCollaborator = () => {
     startDate: "",
     position: "",
     salary: "",
-    isRetired: false, 
-    endDate: "",       
+    severanceFund: "",
+    isRetired: false,
+    endDate: "",
   });
 
   const [colaboradores, setColaboradores] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchColaboradores = async () => {
+      if (!proyectoID) return;
       try {
-        const lista = await obtenerColaboradores();
+        const lista = await obtenerColaboradoresPorProyecto(proyectoID);
         setColaboradores(lista || []);
       } catch (error) {
         console.error("Error al obtener colaboradores:", error);
@@ -26,9 +32,19 @@ const AddCollaborator = () => {
     };
 
     fetchColaboradores();
-  }, []);
+  }, [proyectoID]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  useEffect(() => {
+    if (proyectoID) {
+      console.log("ID del proyecto desde useParams:", proyectoID);
+    } else {
+      console.warn("No se encontró el ID del proyecto.");
+    }
+  }, [proyectoID]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setCollaborator((prev) => ({ ...prev, [name]: value }));
   };
@@ -36,36 +52,26 @@ const AddCollaborator = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!proyectoID) {
+      toast.error("No se encontró el ID del proyecto.");
+      return;
+    }
+
     try {
-      // Validar campos obligatorios
       for (const key in collaborator) {
         if (
-          key !== "isRetired" && 
-          key !== "endDate" && 
+          key !== "isRetired" &&
+          key !== "endDate" &&
           !collaborator[key as keyof typeof collaborator]
         ) {
-          alert("Todos los campos son obligatorios.");
+          toast.error("Todos los campos son obligatorios.");
           return;
         }
       }
 
-      // Verificar duplicado
-      const existeColaborador = colaboradores.some(
-        (colab) =>
-          colab.idNumber.trim() === collaborator.idNumber.trim() ||
-          colab.fullName.trim().toLowerCase() === collaborator.fullName.trim().toLowerCase()
-      );
+      await agregarColaboradorAProyecto(proyectoID, collaborator);
+      toast.success("Colaborador agregado correctamente");
 
-      if (existeColaborador) {
-        alert("Error: El ID o el Nombre ya están registrados.");
-        return;
-      }
-
-      // Agregar colaborador
-      await agregarColaborador(collaborator);
-      alert("Colaborador agregado correctamente");
-
-      // Limpiar formulario
       setCollaborator({
         contractType: "",
         fullName: "",
@@ -73,15 +79,16 @@ const AddCollaborator = () => {
         startDate: "",
         position: "",
         salary: "",
+        severanceFund: "",
         isRetired: false,
         endDate: "",
       });
 
-      const listaActualizada = await obtenerColaboradores();
+      const listaActualizada = await obtenerColaboradoresPorProyecto(proyectoID);
       setColaboradores(listaActualizada || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al agregar colaborador:", error);
-      alert("Hubo un error al agregar el colaborador.");
+      toast.error(error.message || "Hubo un error al agregar el colaborador.");
     }
   };
 
@@ -129,6 +136,9 @@ const AddCollaborator = () => {
         required
       />
 
+      <label className="block text-sm font-medium text-gray-600">
+        Fecha de ingreso
+      </label>
       <input
         type="date"
         name="startDate"
@@ -157,6 +167,25 @@ const AddCollaborator = () => {
         onChange={handleChange}
         required
       />
+
+      {/* Fondo de Cesantías */}
+      <label className="block text-sm font-medium text-gray-600">
+        Fondo de Cesantías
+      </label>
+      <select
+        name="severanceFund"
+        value={collaborator.severanceFund}
+        onChange={handleChange}
+        className="w-full p-2 border rounded-lg mb-3"
+        required
+      >
+        <option value="">Seleccione una opción</option>
+        <option value="PORVENIR">Porvenir</option>
+        <option value="PROTECCION">Protección</option>
+        <option value="COLFONDOS">Colfondos</option>
+        <option value="FNA">Fondo Nacional del Ahorro (FNA)</option>
+        <option value="COLPENSIONES">Colpensiones</option>
+      </select>
 
       <button
         type="submit"

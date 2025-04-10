@@ -57,13 +57,12 @@ const StaffList = () => {
       const fileRef = ref(storage, `certificados/${certificateUid}.pdf`);
 
       try {
-
         await uploadBytes(fileRef, file);
         const fileUrl = await getDownloadURL(fileRef);
 
         const docRef = doc(db, "certificados", certificateUid);
         await updateDoc(docRef, {
-          fileUrl, 
+          fileUrl,
         });
 
         setCertificates((prev) =>
@@ -94,11 +93,18 @@ const StaffList = () => {
             </button>
             {dropdownOpen && (
               <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
-                <button onClick={() => navigate("/admin/agregar-colaborador")} className="block w-full px-4 py-2 text-left hover:bg-gray-100">
+                <button
+                  onClick={() => navigate(`/admin/agregar-colaborador/${selectedProjectsUid}`)}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
                   Agregar Colaborador
                 </button>
-                <button onClick={() => navigate("/admin/editar-colaborador")}className="block w-full px-4 py-2 text-left hover:bg-gray-100">
-                Editar Colaborador
+
+                <button
+                  onClick={() => navigate(`/admin/editar-colaborador/${selectedProjectsUid}`)}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Editar Colaborador
                 </button>
               </div>
             )}
@@ -135,26 +141,30 @@ const StaffList = () => {
               </tr>
             </thead>
             <tbody>
-              {certificates.map((user) => (
-                <tr key={user.certificateUid} className="border-b hover:bg-gray-50 transition-colors">
-                  <td className="py-3 px-4">{user.certificateUid}</td>
-                  <td className="py-3 px-4">{user.person}</td>
-                  <td className="py-3 px-4">{user.nameProject}</td>
-                  <td className="py-3 px-4">{user.certificateType}</td>
-                  <td className="py-3 px-4">
-                    <button onClick={() => handleDownload(user.certificateUid)} className="hover:bg-gray-100 p-1 rounded-full transition-colors">
-                      <FileText className="h-5 w-5 text-blue-600" />
-                    </button>
-                  </td>
-                  <td className="py-3 px-4">
-                    <label className="cursor-pointer hover:bg-gray-100 p-1 rounded-full transition-colors">
-                      <input type="file" className="hidden" onChange={(e) => handleUpload(user.certificateUid, e)} />
-                      <Upload className="h-5 w-5 text-blue-600" />
-                    </label>
-                  </td>
-                  <td className="py-3 px-4 text-blue-600">{user.state}</td>
-                </tr>
-              ))}
+              {certificates
+                .filter((user) =>
+                  user.person?.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+                .map((user) => (
+                  <tr key={user.certificateUid} className="border-b hover:bg-gray-50 transition-colors">
+                    <td className="py-3 px-4">{user.certificateUid}</td>
+                    <td className="py-3 px-4">{user.person}</td>
+                    <td className="py-3 px-4">{user.nameProject}</td>
+                    <td className="py-3 px-4">{user.certificateType}</td>
+                    <td className="py-3 px-4">
+                      <button onClick={() => handleDownload(user.certificateUid)} className="hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <FileText className="h-5 w-5 text-blue-600" />
+                      </button>
+                    </td>
+                    <td className="py-3 px-4">
+                      <label className="cursor-pointer hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <input type="file" className="hidden" onChange={(e) => handleUpload(user.certificateUid, e)} />
+                        <Upload className="h-5 w-5 text-blue-600" />
+                      </label>
+                    </td>
+                    <td className="py-3 px-4 text-blue-600">{user.state}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

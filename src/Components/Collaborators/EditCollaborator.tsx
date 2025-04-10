@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
+import { useParams } from "react-router-dom";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../ServicesFirebase/firebase";
 import { Pencil, Check } from "lucide-react";
 
@@ -12,6 +19,7 @@ type Collaborator = {
   startDate: string;
   endDate?: string;
   isRetired?: boolean;
+  severanceFund?: string;
 };
 
 const fieldLabels: Record<string, string> = {
@@ -21,20 +29,28 @@ const fieldLabels: Record<string, string> = {
   position: "Cargo",
   salary: "Salario",
   startDate: "Fecha de inicio",
+  severanceFund: "Fondo de Cesantías",
 };
 
 const EditCollaborator = () => {
-  const [collaborators, setCollaborators] = useState<{ id: string; fullName: string; idNumber: string }[]>([]);
+  const { proyectoID } = useParams<{ proyectoID: string }>();
+  const [collaborators, setCollaborators] = useState<
+    { id: string; fullName: string; idNumber: string }[]
+  >([]);
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState<typeof collaborators>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [collaboratorData, setCollaboratorData] = useState<Collaborator | null>(null);
+  const [collaboratorData, setCollaboratorData] =
+    useState<Collaborator | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [retired, setRetired] = useState(false);
 
   useEffect(() => {
     const fetchCollaborators = async () => {
-      const snapshot = await getDocs(collection(db, "colaboradores"));
+      if (!proyectoID) return;
+
+      const ref = collection(db, "proyectos", proyectoID, "Colaboradores");
+      const snapshot = await getDocs(ref);
       const data = snapshot.docs.map((doc) => ({
         id: doc.id,
         fullName: doc.data().fullName,
@@ -45,33 +61,41 @@ const EditCollaborator = () => {
     };
 
     fetchCollaborators();
-  }, []);
+  }, [proyectoID]);
 
   useEffect(() => {
     const fetchCollaborator = async () => {
-      if (!selectedId) return;
-      const docRef = doc(db, "colaboradores", selectedId);
-      const docSnap = await getDoc(docRef);
+      if (!selectedId || !proyectoID) return;
 
-      if (docSnap.exists()) {
-        setCollaboratorData(docSnap.data() as Collaborator);
-        setRetired(!!docSnap.data().isRetired);
+      const ref = doc(db, "proyectos", proyectoID, "Colaboradores", selectedId);
+      const snap = await getDoc(ref);
+
+      if (snap.exists()) {
+        setCollaboratorData(snap.data() as Collaborator);
+        setRetired(!!snap.data().isRetired);
       }
     };
 
     fetchCollaborator();
-  }, [selectedId]);
+  }, [selectedId, proyectoID]);
 
   const handleUpdate = async () => {
-    if (!selectedId || !collaboratorData) return;
+    if (!selectedId || !collaboratorData || !proyectoID) return;
+
+    if (retired && !collaboratorData.endDate) {
+      alert("Por favor, ingresa una fecha de retiro.");
+      return;
+    }
 
     const updatedData = {
       ...collaboratorData,
       isRetired: retired,
+      endDate: retired ? collaboratorData.endDate || "" : "",
     };
 
     try {
-      await updateDoc(doc(db, "colaboradores", selectedId), updatedData);
+      const ref = doc(db, "proyectos", proyectoID, "Colaboradores", selectedId);
+      await updateDoc(ref, updatedData);
       alert("Colaborador actualizado correctamente.");
       setIsEditing(false);
     } catch (err) {
@@ -83,11 +107,12 @@ const EditCollaborator = () => {
     const value = e.target.value;
     setSearch(value);
 
-    const filteredResults = collaborators.filter((colab) =>
-      `${colab.fullName} ${colab.idNumber}`.toLowerCase().includes(value.toLowerCase())
+    const results = collaborators.filter((colab) =>
+      `${colab.fullName} ${colab.idNumber}`
+        .toLowerCase()
+        .includes(value.toLowerCase())
     );
-
-    setFiltered(filteredResults);
+    setFiltered(results);
   };
 
   return (
@@ -138,18 +163,40 @@ const EditCollaborator = () => {
                   <label className="block font-semibold">
                     {fieldLabels[key] || key}
                   </label>
-                  <input
-                    type="text"
-                    value={value as string}
-                    disabled={!isEditing}
-                    onChange={(e) =>
-                      setCollaboratorData((prev) => ({
-                        ...prev!,
-                        [key]: e.target.value,
-                      }))
-                    }
-                    className="w-full border p-2 rounded-md"
-                  />
+
+                  {key === "severanceFund" && isEditing ? (
+                    <select
+                      value={(value as string) || ""}
+                      onChange={(e) =>
+                        setCollaboratorData((prev) => ({
+                          ...prev!,
+                          severanceFund: e.target.value,
+                        }))
+                      }
+                      className="w-full border p-2 rounded-md"
+                    >
+                      <option value="">Seleccione un fondo</option>
+                      <option value="Porvenir">Porvenir</option>
+                      <option value="Protección">Protección</option>
+                      <option value="Colfondos">Colfondos</option>
+                      <option value="Fondo Nacional del Ahorro">
+                        Fondo Nacional del Ahorro
+                      </option>
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      value={value as string}
+                      disabled={!isEditing}
+                      onChange={(e) =>
+                        setCollaboratorData((prev) => ({
+                          ...prev!,
+                          [key]: e.target.value,
+                        }))
+                      }
+                      className="w-full border p-2 rounded-md"
+                    />
+                  )}
                 </div>
               ) : null
             )}
