@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../ServicesFirebase/firebase";
-import { UserType } from "../TypeScript/Types/types"; // Asegúrate de que la ruta sea correcta
-import { useUserStore } from "../Context/context"; // Importa tu contexto correctamente
+import { UserType } from "../TypeScript/Types/types"; 
+import { useUserStore } from "../Context/context"; 
 import { onAuthStateChanged } from "firebase/auth";
 
 // Hook personalizado para obtener los datos del usuario autenticado desde Firestore

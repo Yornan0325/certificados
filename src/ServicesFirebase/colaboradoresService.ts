@@ -1,5 +1,8 @@
 import { db } from "../ServicesFirebase/firebase";
 import { collection, addDoc, getDocs, query, where, DocumentData } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"; 
+
+const storage = getStorage(); 
 
 // Obtener colaboradores por proyecto (consorcio)
 export const obtenerColaboradoresPorProyecto = async (proyectoId: string) => {
@@ -70,4 +73,18 @@ export const agregarColaboradorAProyecto = async (
     console.error("Error al agregar colaborador:", error);
     throw error;
   }
+};
+
+// Subir PDF a Firebase Storage
+export const uploadPDF = async (file: File, userId: string, docType: string) => {
+  const storageRef = ref(storage, `documentos/${userId}/${docType}.pdf`);
+  await uploadBytes(storageRef, file);
+  return await getDownloadURL(storageRef);
+};
+ 
+// Obtener URL de descarga de un PDF desde Firebase Storage
+export const getPDFUrl = async (userId: string, docType: string): Promise<string> => {
+  const storage = getStorage();
+  const fileRef = ref(storage, `documentos/${userId}/${docType}.pdf`);
+  return await getDownloadURL(fileRef);
 };
