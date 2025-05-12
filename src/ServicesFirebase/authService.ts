@@ -1,4 +1,4 @@
-import { getFirestore, doc, updateDoc, getDocs, collection, query, where } from "firebase/firestore";
+import { getFirestore, doc, updateDoc, getDocs, collection, query, where, deleteDoc } from "firebase/firestore";
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 
 const db = getFirestore();
@@ -10,7 +10,7 @@ const auth = getAuth();
  */
 export const getPendingUsers = async () => {
   try {
-    const usersQuery = query(collection(db, "usuarios"), where("activo", "==", false));
+    const usersQuery = query(collection(db, "usuarios"), where("check", "==", false));
     const querySnapshot = await getDocs(usersQuery);
     return querySnapshot.docs.map((doc) => ({
       id: doc.id,
@@ -29,7 +29,7 @@ export const getPendingUsers = async () => {
 export const activateUser = async (userId: string) => {
   try {
     const userRef = doc(db, "usuarios", userId);
-    await updateDoc(userRef, { activo: true });
+    await updateDoc(userRef, { check: true });
     console.log(`Usuario ${userId} activado correctamente.`);
   } catch (error) {
     console.error("Error al activar usuario:", error);
@@ -57,7 +57,7 @@ export const loginUser = async (email: string, password: string) => {
 
     const userData = userSnapshot.docs[0].data();
 
-    if (!userData?.activo) {
+    if (!userData?.check) {
       throw new Error("Tu cuenta aún no ha sido activada por el administrador.");
     }
 
@@ -80,5 +80,54 @@ export const recoverPassword = async (email: string) => {
   } catch (error) {
     console.error("Error al enviar el correo de recuperación:", error);
     throw new Error("Error al enviar el correo. Verifica el email ingresado.");
+  }
+};
+
+/**
+ * Activa un usuario y le asigna un rol y consorcio.
+ * @param userId - ID del usuario en Firestore.
+ * @param rol - Rol asignado (SISO o Auxiliar).
+ * @param consorcio - Nombre del consorcio.
+ */
+export const activateUserWithRoleAndConsorcio = async (userId: string, rol: string, consorcio: string) => {
+  try {
+    const userRef = doc(db, "usuarios", userId);
+    await updateDoc(userRef, {
+      check: true,
+      rol,
+      consorcio,
+    });
+    console.log(`Usuario ${userId} activado con rol ${rol} y consorcio ${consorcio}.`);
+  } catch (error) {
+    console.error("Error al activar usuario con rol:", error);
+    throw new Error("No se pudo activar el usuario.");
+  }
+};
+
+/**
+ * Elimina un usuario de Firestore (rechazo).
+ * @param userId - ID del usuario.
+ */
+export const rejectUser = async (userId: string) => {
+  try {
+    await deleteDoc(doc(db, "usuarios", userId));
+    console.log(`Usuario ${userId} eliminado correctamente.`);
+  } catch (error) {
+    console.error("Error al eliminar usuario:", error);
+    throw new Error("No se pudo eliminar el usuario.");
+  }
+};
+
+/**
+ * Obtiene la lista de consorcios disponibles desde la colección "proyectos".
+ * @returns Arreglo de nombres de consorcios.
+ */
+export const getConsorcios = async (): Promise<string[]> => {
+  try {
+    const snapshot = await getDocs(collection(db, "proyectos"));
+    return snapshot.docs.map((doc) => doc.data().nombre as string);
+  } catch (error) {
+    console.error("Error al obtener consorcios:", error);
+    return [];
   }
 };
