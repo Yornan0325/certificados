@@ -36,7 +36,7 @@ const NavBarHome = ({ imgUser, name, dimention, logoState, showItem }: Props) =>
   // Solo mostrar estas opciones si el usuario es ADMIN
   const navigation = userRole === "admin" ? [
     { name: "Consorcios", href: "/admin/nuevo/1", current: false },
-    { name: "Solicitudes pendientes por aprobacion", href: "#", current: false, action: () => setIsModalOpen(true) }
+    { name: "Solicitudes para aprobacion", href: "#", current: false, action: () => setIsModalOpen(true) }
   ] : [];
 
   function classNames(...classes: string[]) {
