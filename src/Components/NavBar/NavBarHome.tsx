@@ -30,7 +30,7 @@ const NavBarHome = ({ imgUser, name, dimention, logoState, showItem }: Props) =>
 
   // Obtener el rol del usuario
   const userRole = dataUser.length > 0 ? dataUser[0].role : "invitado"; 
-
+  
   const handleOpenModal = () => openModal(true);
 
   // Solo mostrar estas opciones si el usuario es ADMIN
