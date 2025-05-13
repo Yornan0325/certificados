@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../ServicesFirebase/firebase";
-import { ProjectType } from "../TypeScript/Types/types"; // Asegúrate de que la ruta sea correcta
-import { useUserStore } from "../Context/context"; // Contexto para manejar el estado global de los proyectos
+import { ProjectType } from "../TypeScript/Types/types"; 
+import { useUserStore } from "../Context/context"; 
 
 // Hook personalizado para obtener los datos de proyectos desde Firestore
 export const useGetProjectsFromFirestore = () => {

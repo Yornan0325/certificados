@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../ServicesFirebase/firebase";
-import { doc, setDoc } from "firebase/firestore"; // Para guardar en Firestore
+import { doc, setDoc } from "firebase/firestore"; 
 import { FirebaseError } from "firebase/app";
 
 export const useHandleAuthSignUp = () => {
