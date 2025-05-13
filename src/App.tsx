@@ -48,7 +48,7 @@ const App: React.FC = () => {
             <button onClick={handleLogOut} className="btn btn-logout">
               Salir
             </button>
-            <h1 className="mx-12 my-12 bg-red-500">Invitado</h1>
+            {/* <h1 className="mx-12 my-12 bg-red-500">Invitado</h1> */}
             {/* <SignOutButton/>  */}
           </PrivateRoute>
         }

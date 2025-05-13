@@ -26,7 +26,7 @@ export const AdminHomePage = () => {
       <HeaderText title="Consorcios" />
       <ProjectsCards />
       {/* <DocumentTable/> */}
-      <Modal title="Crea o Edita los proyectos">
+      <Modal title="Crea o edita los proyectos">
         <NewProject />
       </Modal>
       
