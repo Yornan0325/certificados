@@ -2,7 +2,6 @@ import React from "react";
 
 interface ActionButtonProps {
   type?: "Button" | "None";
-  // action?: 'submit' | 'reset' | 'button';
   text: string;
   isLoading: boolean;
 }

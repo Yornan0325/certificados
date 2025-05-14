@@ -1,13 +1,16 @@
 import HeaderText from "../../Components/HeaderText/HeaderText";
 import NavBar from "../../Components/NavBar/NavBar";
 // import { useHandleAuthSigOut } from "../Hook/useHandleAuthSigOut";
-import Card from "../../Components/UserHome/ProjectsCards";
+import ProjectsCards from "../../Components/UserHome/ProjectsCards";
 import NavBarHome from "../../Components/NavBar/NavBarHome";
 import Modal from "../../Components/Modal/Modal";
 import NewProject from "../../Components/NewProject/NewProject";
-import DocumentTable from "../../Components/Invitado/DocumentTable";
+// import DocumentTable from "../../Components/Invitado/DocumentTable";
  
+
 export const AdminHomePage = () => {
+ 
+
   return (
     <>
       <NavBar>
@@ -20,12 +23,13 @@ export const AdminHomePage = () => {
           children={undefined}
         />
       </NavBar>
-      <HeaderText title="Usuarios" />
-      <Card />
-      <DocumentTable/>
-      <Modal title="Crea o Edita los proyectos">
-        <NewProject/>
+      <HeaderText title="Consorcios" />
+      <ProjectsCards />
+      {/* <DocumentTable/> */}
+      <Modal title="Crea o edita los proyectos">
+        <NewProject />
       </Modal>
+      
     </>
   );
 };

@@ -37,7 +37,7 @@ const ProjectList: React.FC<CardItemProps> = ({
         <div className="ml-2">{icon}</div>
         <div className="pt-4 md:p-2 text-center md:text-left space-y-4">
           <div className="absolute top-2   right-4 text-purple-600 text-sm font-medium">
-            {pendingCount}
+            {pendingCount > 1 ? `${pendingCount} Pendientes `  : `${pendingCount} Pendiente` } 
           </div>
 
           <div className="flex items-center space-x-3 mt-2">
@@ -47,7 +47,6 @@ const ProjectList: React.FC<CardItemProps> = ({
             >
               <Link
                 to={`/${role}/${encodeURIComponent(project.uid)}`}
-                
               >
                 <p>{project.projectTitle}</p>
               </Link>
