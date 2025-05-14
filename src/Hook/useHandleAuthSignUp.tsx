@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../ServicesFirebase/firebase";
-import { doc, setDoc } from "firebase/firestore"; // Para guardar en Firestore
+import { doc, setDoc } from "firebase/firestore"; 
 import { FirebaseError } from "firebase/app";
 
 export const useHandleAuthSignUp = () => {
@@ -24,6 +24,7 @@ export const useHandleAuthSignUp = () => {
         role: userRole,
         name: username,
         uid: userCredential.user.uid, // Guarda el UID del usuario
+        check:false
       });
 
       setIsLoading(false);

@@ -6,6 +6,7 @@ interface UserType {
   name: string;
   role: string;
   uid: string;
+  check:boolean
 }
 
 interface ModalType {
@@ -29,6 +30,8 @@ interface ProjectType {
 }
  
 interface CertificateType {
+  id: number;
+  startDate: any;
   certificateType: string;
   person: string;
   certificateUid: string;
@@ -50,6 +53,7 @@ interface UserContext {
   setDataAuthenticatedUser: (data: UserType[]) => void;
   setLoading: (loading: boolean) => void;
   setProjects: (projectsData: ProjectType[]) => void;
+  
   // Propiedades del modal
   isModalOpen: boolean;
   modalContent: React.ReactNode | null;
@@ -69,6 +73,7 @@ export type {
   UserType,
   InputFormProps,
   ModalType,
+ 
   // ModalDeleteProps,
   ProjectType,
   CertificateType,

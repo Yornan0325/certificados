@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom"; 
 import { LoginPage } from "./Pages/AdminPages/LoginPage";
 import { SignUpPage } from "./Pages/AdminPages/SignUpPage";
 import { AdminHomePage } from "./Pages/AdminPages/AdminHomePage";
@@ -9,21 +9,22 @@ import { useHandleAuthSigOut } from "./Hook/useHandleAuthSigOut";
 import { useHandleUser } from "./Hook/useUser";
 import StaffList from "./Components/UserHome/StaffList";
 import NewProject from "./Components/NewProject/NewProject";
- 
+import RecoverPasswordPage from "./UserForm/FormModules/RecoverPasswordPage"; 
+import AdminApprovalModal from "./Components/Modal/AdminApprovalModal";
+import { useState } from "react";
+import AddCollaborator from "./Components/Collaborators/addcollaborator";
+import EditCollaborator from "./Components/Collaborators/EditCollaborator"; 
+import { Toaster } from "react-hot-toast"; 
 
 const App: React.FC = () => {
-  // useUserData()
-  useGetAuthenticatedUser()
+  useGetAuthenticatedUser();
   useHandleUser();
- 
- 
-  // useDataUsers();
+
   const { signOutSesion } = useHandleAuthSigOut();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleLogOut = async () => {
     await signOutSesion();
-    // Puedes redirigir al usuario a la página de login o landing después de cerrar sesión, si es necesario
-    // Por ejemplo, utilizando react-router: navigate("/login")
   };
 
   return (
@@ -48,7 +49,7 @@ const App: React.FC = () => {
             <button onClick={handleLogOut} className="btn btn-logout">
               Salir
             </button>
-            {/* <h1 className="mx-12 my-12 bg-red-500">Invitado</h1> */}
+            <h1 className="mx-12 my-12 bg-red-500">Invitado</h1>
             {/* <SignOutButton/>  */}
           </PrivateRoute>
         }

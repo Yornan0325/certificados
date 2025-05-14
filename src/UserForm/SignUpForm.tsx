@@ -3,7 +3,7 @@ import ActionButton from "./FormModules/ActionButton";
 import FormExtra from "./FormModules/FormExtra";
 import FormInput from "./FormModules/FormInput";
 import useFormInput from "../Hook/useFormInput";
-import { useHandleAuthSignUp } from "../Hook/useHandleAuthSignUp"; // Cambié aquí para el registro de usuarios
+import { useHandleAuthSignUp } from "../Hook/useHandleAuthSignUp"; 
 
 const SignUpForm: React.FC<{ LIST_DATA_SIGNUP: LoginFields[] }> = ({ LIST_DATA_SIGNUP }) => {
   // Utiliza el hook de registro

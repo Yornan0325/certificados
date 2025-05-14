@@ -1,185 +1,130 @@
 import React, { useEffect, useState } from "react";
-import { Search, ChevronDown, FileText, Upload, Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Search, ChevronDown, FileText, Upload } from "lucide-react";
+import { collection, getDocs, query, where, doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "../../ServicesFirebase/firebase"; // Asegúrate de crear este archivo
+import { db, storage } from "../../ServicesFirebase/firebase";
 import HeaderText from "../HeaderText/HeaderText";
-import Modal from "../Modal/Modal";
 import { useUserStore } from "../../Context/context";
 import { CertificateType } from "../../TypeScript/Types/types";
-import { collection, getDocs, query, where } from "firebase/firestore";
-
-// interface UserType {
-//   id: number;
-//   certificateType: string;
-//   person: string;
-//   certificateUid: string;
-//   nameProject: string;
-//   projectUid: string;
-//   state: string;
-//   date: string;
-// }
 
 const StaffList = () => {
-  const { openModal } = useUserStore();
+  const navigate = useNavigate();
   const { selectedProjectsUid } = useUserStore();
-  const [certificates, setCertificates] = useState<CertificateType[]>([]); // Estado para almacenar los certificados
-  const [searchTerm, setSearchTerm] = useState(""); // Estado para el buscador
-  const [selectedUser, setSelectedUser] = useState<CertificateType | null>(
-    null
-  ); // Para guardar el documento seleccionado
-  const [uploadStatus, setUploadStatus] = useState<
-    "subiendo" | "exito" | "error" | null
-  >(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [certificates, setCertificates] = useState<CertificateType[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchCertificates = async () => {
-      if (!selectedProjectsUid) {
-        return; 
-      }
-
-      // console.log("UID del proyecto seleccionado:", selectedProjectsUid);
+      if (!selectedProjectsUid) return;
 
       try {
-        const certificatesCollection = collection(db, "certificados"); // Referencia a la colección de certificados
-        // Obtiene los datos del proyecto por el id del proyecto
-        const q = query(
-          certificatesCollection,
-          where("projectUid", "==", selectedProjectsUid)
-        ); // Consulta a Firestore
+        const certificatesCollection = collection(db, "certificados");
+        const q = query(certificatesCollection, where("projectUid", "==", selectedProjectsUid));
         const querySnapshot = await getDocs(q);
 
-        if (querySnapshot.empty) {
-          console.log(
-            "No se encontraron certificados para el proyecto:",
-            selectedProjectsUid
-          );
-        } else {
-          const fetchedCertificates: CertificateType[] = querySnapshot.docs.map(
-            (doc) => ({
-              id: doc.id, // Usa el ID del documento en Firestore
-              ...doc.data(), // Obtén los datos del documento
-            })
-          ) as unknown as CertificateType[];
+        if (!querySnapshot.empty) {
+          const fetchedCertificates: CertificateType[] = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as unknown as CertificateType[];
 
-          console.log("Certificados obtenidos:", fetchedCertificates);
-          setCertificates(fetchedCertificates); // Actualizar el estado con los certificados obtenidos
+          setCertificates(fetchedCertificates);
         }
       } catch (error) {
-        console.error("Error al obtener los certificados:", error); // Manejo de errores
+        console.error("Error al obtener los certificados:", error);
       }
     };
 
-    fetchCertificates(); // Llamar a la función para obtener certificados
+    fetchCertificates();
   }, [selectedProjectsUid]);
 
-  const handleFileUpload = async (file: File) => {
+  const handleDownload = async (certificateUid: string) => {
     try {
-      if (file.type !== "application/pdf") {
-        throw new Error("Por favor, sube únicamente archivos PDF");
-      }
-
-      if (file.size > 10 * 1024 * 1024) {
-        throw new Error("El archivo no debe superar los 10MB");
-      }
-
-      setUploadStatus("subiendo");
-      setErrorMessage("");
-
-      // Crear una referencia única para el archivo
-      const fileRef = ref(
-        storage,
-        `documentos/${selectedUser?.certificateUid}/${Date.now()}_${file.name}`
-      );
-
-      // Subir el archivo a Firebase Storage
-      await uploadBytes(fileRef, file);
-
-      // Obtener la URL de descarga
-      const downloadURL = await getDownloadURL(fileRef);
-      console.log("URL del archivo:", downloadURL);
-
-      setUploadStatus("exito");
-      setTimeout(() => {
-        openModal(false);
-        setUploadStatus(null);
-      }, 1500);
+      const fileRef = ref(storage, `certificados/${certificateUid}.pdf`);
+      const url = await getDownloadURL(fileRef);
+      window.open(url, "_blank");
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : "Error al subir el archivo"
-      );
-      setUploadStatus("error");
-      console.error("Error al subir el archivo:", error);
+      console.error("Error al descargar el documento:", error);
+      alert("No se pudo descargar el archivo.");
     }
   };
 
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
+  const handleUpload = async (certificateUid: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const fileRef = ref(storage, `certificados/${certificateUid}.pdf`);
 
-  const handleDragIn = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
+      try {
+        await uploadBytes(fileRef, file);
+        const fileUrl = await getDownloadURL(fileRef);
 
-  const handleDragOut = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
+        const docRef = doc(db, "certificados", certificateUid);
+        await updateDoc(docRef, {
+          fileUrl,
+        });
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
+        setCertificates((prev) =>
+          prev.map((cert) =>
+            cert.certificateUid === certificateUid ? { ...cert, fileUrl } : cert
+          )
+        );
 
-    const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      handleFileUpload(files[0]);
+        alert("Archivo subido correctamente y guardado en la base de datos.");
+      } catch (error) {
+        console.error("Error al subir el archivo:", error);
+        alert("No se pudo subir el archivo.");
+      }
     }
-  };
-  // console.log( "certificates",certificates);
-  const filteredUsers = certificates.filter((user) => {
-    const searchFields = [
-      user.person || "",
-      user.certificateType || "",
-      user.certificateUid || "",
-      user.nameProject,
-    ].map((field) => field.toLowerCase());
-
-    return searchFields.some((field) =>
-      field.includes(searchTerm.toLowerCase())
-    );
-  });
-
-  const openUploadModal = (user: CertificateType) => {
-    setSelectedUser(user);
-    openModal(true);
-    setUploadStatus(null);
-    setErrorMessage("");
   };
 
   return (
     <>
-      <HeaderText title="Pedidos" />
+      <div className="flex justify-between items-center px-6 py-4">
+        <HeaderText title="Pedidos" />
+        <div className="flex space-x-4">
+          <div className="relative">
+            <button
+              className="px-4 py-2 border rounded-md flex items-center gap-2 hover:bg-gray-50"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
+              Colaboradores <ChevronDown className="h-5 w-5" />
+            </button>
+            {dropdownOpen && (
+              <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
+                <button
+                  onClick={() => navigate(`/admin/agregar-colaborador/${selectedProjectsUid}`)}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Agregar Colaborador
+                </button>
+
+                <button
+                  onClick={() => navigate(`/admin/editar-colaborador/${selectedProjectsUid}`)}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Editar Colaborador
+                </button>
+              </div>
+            )}
+          </div>
+          <button className="px-4 py-2 border rounded-md hover:bg-gray-50">Historial</button>
+        </div>
+      </div>
+
       <div className="p-6 max-w-5xl mx-auto">
-        <div className="flex gap-4 mb-6">
+        <div className="flex gap-4 mb-6 relative">
           <div className="relative flex-1">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Bucar..."
+              placeholder="Buscar..."
               className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <Search className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
           </div>
-          <button className="px-4 py-2 border rounded-md flex items-center gap-2 hover:bg-gray-50">
-            <ChevronDown className="h-5 w-5" />
-          </button>
         </div>
 
         <div className="overflow-x-auto">
@@ -196,107 +141,33 @@ const StaffList = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map((user) => (
-                <tr
-                  key={user.certificateUid}
-                  className="border-b hover:bg-gray-50 transition-colors"
-                >
-                  <td className="py-3 px-4">{user.certificateUid}</td>
-                  <td className="py-3 px-4">
-                    <div>
-                      <div>{user.person}</div>
-                      {/* <div className="text-sm text-gray-500">{user.certificateUid}</div> */}
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">{user.nameProject}</td>
-                  <td className="py-3 px-4">{user.certificateType}</td>
-
-                  <td className="py-3 px-4 items-center">
-                    <button
-                      onClick={() => openUploadModal(user)}
-                      className="hover:bg-gray-100 p-1 rounded-full transition-colors items-center"
-                    >
-                      <FileText className="h-5 w-5 text-gray-600" />
-                    </button>
-                    <span className="text-sm text-gray-500">10/12/2024</span>
-                  </td>
-
-                  <td className="py-3 px-4 justify-center ">
-                    <button
-                      onClick={() => openUploadModal(user)}
-                      className="hover:bg-gray-100 p-1 rounded-full transition-colors"
-                    >
-                      <FileText className="h-5 w-5 text-gray-600" />
-                    </button>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`${
-                        user.state === "Pendiente"
-                          ? "text-blue-600"
-                          : "text-green-600"
-                      }`}
-                    >
-                      {user.state}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {certificates
+                .filter((user) =>
+                  user.person?.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+                .map((user) => (
+                  <tr key={user.certificateUid} className="border-b hover:bg-gray-50 transition-colors">
+                    <td className="py-3 px-4">{user.certificateUid}</td>
+                    <td className="py-3 px-4">{user.person}</td>
+                    <td className="py-3 px-4">{user.nameProject}</td>
+                    <td className="py-3 px-4">{user.certificateType}</td>
+                    <td className="py-3 px-4">
+                      <button onClick={() => handleDownload(user.certificateUid)} className="hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <FileText className="h-5 w-5 text-blue-600" />
+                      </button>
+                    </td>
+                    <td className="py-3 px-4">
+                      <label className="cursor-pointer hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <input type="file" className="hidden" onChange={(e) => handleUpload(user.certificateUid, e)} />
+                        <Upload className="h-5 w-5 text-blue-600" />
+                      </label>
+                    </td>
+                    <td className="py-3 px-4 text-blue-600">{user.state}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
-
-        <Modal title={selectedUser?.person || ""}>
-          {selectedUser && (
-            <div className="space-y-4">
-              <div className="text-sm text-gray-500">
-                <div className="text-sm text-gray-500">
-                  Arrastra y suelta el PDF aquí, o haz clic para seleccionar
-                </div>
-              </div>
-
-              {uploadStatus === "exito" ? (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-600" />
-                  <span className="text-green-800">
-                    Documento subido exitosamente
-                  </span>
-                </div>
-              ) : (
-                <div
-                  className={`relative border-2 border-dashed rounded-lg p-8 text-center ${
-                    isDragging
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300"
-                  } ${uploadStatus === "subiendo" ? "opacity-50" : ""}`}
-                  onDragEnter={handleDragIn}
-                  onDragLeave={handleDragOut}
-                  onDragOver={handleDrag}
-                  onDrop={handleDrop}
-                >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Upload className="h-12 w-12 text-gray-400" />
-                  </div>
-
-                  <input
-                    type="file"
-                    accept="application/pdf"
-                    onChange={(e) => {
-                      if (e.target.files) {
-                        handleFileUpload(e.target.files[0]);
-                      }
-                    }}
-                    className="absolute inset-0 cursor-pointer opacity-0"
-                  />
-                </div>
-              )}
-
-              {uploadStatus === "error" && (
-                <div className="text-red-600">{errorMessage}</div>
-              )}
-            </div>
-          )}
-        </Modal>
       </div>
     </>
   );

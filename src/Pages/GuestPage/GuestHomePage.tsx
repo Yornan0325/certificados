@@ -1,12 +1,10 @@
-import HeaderText from "../../Components/HeaderText/HeaderText";
+import HeaderText from "../../Components/HeaderText/HeaderText"; 
 import NavBar from "../../Components/NavBar/NavBar";
-// import { useHandleAuthSigOut } from "../Hook/useHandleAuthSigOut";
-import Card from "../../Components/UserHome/ProjectsCards";
 import NavBarHome from "../../Components/NavBar/NavBarHome";
 import Modal from "../../Components/Modal/Modal";
 import NewProject from "../../Components/NewProject/NewProject";
 import DocumentTable from "../../Components/Invitado/DocumentTable";
- 
+
 export const GuestHomePage = () => {
   return (
     <>
@@ -17,12 +15,14 @@ export const GuestHomePage = () => {
           logoState={"logo"}
           dimention={"w-12 h-12"}
           showItem={true}
-          children={undefined}
+
         />
       </NavBar>
-      <HeaderText title="Usuarios" />
-      <Card />
+      <HeaderText title="Documentos" />
+      
+      
       <DocumentTable/>
+
       <Modal title="Crea o Edita los proyectos">
         <NewProject/>
       </Modal>
