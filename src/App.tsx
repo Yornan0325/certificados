@@ -28,6 +28,7 @@ const App: React.FC = () => {
   };
 
   return (
+    <>
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/registro" element={<SignUpPage />} />
@@ -35,6 +36,8 @@ const App: React.FC = () => {
       <Route  path="/admin/nuevo/:routeParams" element={<NewProject/>} />
       <Route  path="/admin/agregar-colaborador/:routeParams" element={<AddCollaborator/>} />
       <Route  path="/admin/editar-colaborador/:routeParams" element={<EditCollaborator/>} />
+
+      
       <Route
         path="/admin"
         element={
@@ -56,8 +59,16 @@ const App: React.FC = () => {
           </PrivateRoute>
         }
       />
+       <Route path="/recuperar-contraseña" element={<RecoverPasswordPage />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
+
+    {isModalOpen && (
+        <AdminApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      )}
+
+      <Toaster position="top-right" /> 
+    </>
   );
 };
 
