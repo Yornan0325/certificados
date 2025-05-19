@@ -18,7 +18,7 @@ export const GuestHomePage = () => {
 
         />
       </NavBar>
-      <HeaderText title="Documentos" />
+      <HeaderText title="Sisos" />
       
       
       <DocumentTable/>
