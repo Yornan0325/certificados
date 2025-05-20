@@ -65,7 +65,7 @@ interface UserContext {
 
 type UpdateUserAuth = (newState: null | User) => void;
 type UserAuth = null | User;
-type UserRole = "admin" | "invitado" | null;
+type UserRole = "administrador" | "siso" | "auxiliar" | null;
 
 export type {
   UserContext,

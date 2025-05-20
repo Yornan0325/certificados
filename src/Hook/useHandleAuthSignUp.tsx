@@ -14,14 +14,12 @@ export const useHandleAuthSignUp = () => {
   ) => {
     setIsLoading(true);
     setError("");
-    const userRole = "invitado";
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       // Crea un nuevo documento en Firestore usando el email como ID
       await setDoc(doc(db, "usuarios", email), {
         createdAt: new Date(),
         email: email,
-        role: userRole,
         name: username,
         uid: userCredential.user.uid, // Guarda el UID del usuario
         check:false

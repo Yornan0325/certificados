@@ -3,7 +3,7 @@ import NavBar from "../../Components/NavBar/NavBar";
 import NavBarHome from "../../Components/NavBar/NavBarHome";
 import Modal from "../../Components/Modal/Modal";
 import NewProject from "../../Components/NewProject/NewProject";
-import DocumentTable from "../../Components/Invitado/DocumentTable";
+import DocumentTable from "../../Components/Siso/DocumentTable";
 
 export const GuestHomePage = () => {
   return (

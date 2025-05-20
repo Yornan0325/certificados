@@ -5,16 +5,11 @@ import AdminApprovalModal from "../Modal/AdminApprovalModal";
 import logoImage from "../../Components/Imagenes/logoImage.jpeg";
 import {
   Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Transition,
+  DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems, Transition,
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useUserStore } from "../../Context/context";
+import { Link } from "react-router-dom";
 
 type Props = {
   name: string;
@@ -29,15 +24,28 @@ const NavBarHome = ({ imgUser, name, dimention, logoState, showItem }: Props) =>
   const { dataUser, openModal } = useUserStore();
 
   // Obtener el rol del usuario
-  const userRole = dataUser.length > 0 ? dataUser[0].role : "invitado"; 
-  
+  const userRole = dataUser.length > 0 ? dataUser[0].role : "siso";
+
   const handleOpenModal = () => openModal(true);
 
   // Solo mostrar estas opciones si el usuario es ADMIN
-  const navigation = userRole === "admin" ? [
-    { name: "Consorcios", href: "/admin/nuevo/1", current: false },
-    { name: "Solicitudes para aprobacion", href: "#", current: false, action: () => setIsModalOpen(true) }
-  ] : [];
+  // const navigation = userRole === "administrador" ? [
+  //   { name: "Consorcios", href: "/administrador/nuevo/1", current: false },
+  //   { name: "Solicitudes para aprobacion", href: "#", current: false, action: () => setIsModalOpen(true) }
+  // ] : [];
+
+
+  const navigation =
+    userRole === "administrador"
+      ? [
+        { name: "Consorcios", href: "/administrador/nuevo/1", current: false },
+        { name: "Solicitudes para aprobación", href: "#", current: false, action: () => setIsModalOpen(true) }
+      ]
+      : userRole === "auxiliar"
+        ? [
+          { name: "Consorcios", href: "/administrador/nuevo/1", current: false }
+        ]
+        : [];
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
@@ -49,12 +57,14 @@ const NavBarHome = ({ imgUser, name, dimention, logoState, showItem }: Props) =>
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-2">
             <div className="relative flex h-16 items-center justify-between">
-              
+
               {/* Logo o Avatar */}
               {logoState ? (
                 <div className="flex items-center gap-2">
                   <Avatar dimention={dimention} logoImage={logoImage} />
                   <div className="hidden md:block">
+
+
                     <h2 className="text-2xl text-opacity-50 text-black font-bold">{name}</h2>
                   </div>
                 </div>
@@ -73,19 +83,31 @@ const NavBarHome = ({ imgUser, name, dimention, logoState, showItem }: Props) =>
 
               {/* Navegación */}
               <div className="flex items-center space-x-4">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    onClick={item.action ? item.action : undefined}
-                    className={classNames(
-                      "text-gray-100 hover:text-white",
-                      "rounded-md px-3 py-2 text-sm font-medium cursor-pointer"
-                    )}
-                  >
-                    {item.name}
-                  </a>
-                ))}
+                {navigation.map((item) =>
+                  item.href && item.href !== "#" ? (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={classNames(
+                        "text-gray-100 hover:text-white",
+                        "rounded-md px-3 py-2 text-sm font-medium cursor-pointer"
+                      )}
+                    >
+                      {item.name}
+                    </Link>
+                  ) : (
+                    <button
+                      key={item.name}
+                      onClick={item.action}
+                      className={classNames(
+                        "text-gray-100 hover:text-white",
+                        "rounded-md px-3 py-2 text-sm font-medium cursor-pointer bg-transparent border-none"
+                      )}
+                    >
+                      {item.name}
+                    </button>
+                  )
+                )}
 
                 {/* Menú Usuario */}
                 <Menu as="div" className="relative ml-3">

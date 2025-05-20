@@ -16,20 +16,43 @@ const LoginForm: React.FC<{ LIST_DATA_LOGIN: LoginFields[] }> = ({
     useFormInput({
       initialState: { email: "", password: "" },
     });
-  const { userAuth, userRole } = useUserStore();
+  const { userAuth, userRole,dataUser } = useUserStore();
   const navigate = useNavigate();
+ 
 
+  // Obtener el rol del usuario
+ 
   useEffect(() => {
-    if (userAuth?.email && userRole) {
-      if (userRole === "admin") {
-        navigate("/admin");
-      } else if (userRole === "invitado") {
-        navigate("/invitado");
-      } else {
-        navigate("/");
-      }
+    if (!userAuth?.email || !userRole) return;
+  
+    // Buscar el usuario actual en dataUser
+    const currentUser = dataUser.find(user => user.email === userAuth.email);
+  
+    const isChecked  = currentUser?.check === true;
+  
+    if (userRole === "administrador" && isChecked ) {
+      navigate("/administrador");
+    } else if (userRole === "siso" && isChecked ) {
+      navigate("/siso");
+    } else if (userRole === "auxiliar" && isChecked ) {
+      navigate("/auxiliar");
+    } else {
+      navigate("/");
     }
-  }, [userRole, navigate, userAuth?.email]);
+  }, [userRole, navigate, userAuth?.email, dataUser]);
+  // useEffect(() => {
+  //   if (userAuth?.email && userRole) {
+  //     if (userRole === "administrador" && check===true) {
+  //       navigate("/administrador");
+  //     } else if (userRole === "siso" && check===true) {
+  //       navigate("/siso");
+  //     } else if (userRole === "auxiliar" && check=== false ) {
+  //       navigate("/auxiliar")
+  //     } else {
+  //       navigate("/")
+  //     }
+  //   }
+  // }, [userRole, navigate, userAuth?.email]);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

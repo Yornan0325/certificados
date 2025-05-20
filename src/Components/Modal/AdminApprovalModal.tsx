@@ -71,7 +71,11 @@ const AdminApprovalModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                 <div>
                   <p><strong>{user.name}</strong></p>
                   <p>{user.email}</p>
-                  <p>{user.consorcio || "Sin consorcio"}</p>
+                  <div className="text-sky-500">
+
+                  {user.check == false ? "Usuario sin permisos":""}
+                  </div>
+                 
                 </div>
                 <div className="flex flex-col gap-2">
                   <select
@@ -82,7 +86,7 @@ const AdminApprovalModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                     }
                   >
                     <option value="">Seleccione rol</option>
-                    <option value="SISO">SISO</option>
+                    <option value="SISO">Siso</option>
                     <option value="Auxiliar">Auxiliar</option>
                   </select>
 
