@@ -64,19 +64,6 @@ const App: React.FC = () => {
             </PrivateRoute>
           }
         />
-        {/* <Route
-          path="/auxiliar"
-          element={
-            <PrivateRoute role={["auxiliar"]}>
-              <GuestHomePage />
-              <button onClick={handleLogOut} className="btn btn-logout">
-                Salir
-              </button>
-              <h1 className="mx-12 my-12 bg-red-500">Siso</h1>
-              <SignOutButton/> 
-            </PrivateRoute>
-          }
-        /> */}
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
