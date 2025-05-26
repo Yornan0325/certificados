@@ -1,5 +1,4 @@
 import type { User } from "firebase/auth";
-
 interface UserType {
   createdAt: Date;
   email: string;
@@ -27,6 +26,8 @@ interface InputFormProps {
 interface ProjectType {
   projectTitle: string;
   uid: string;
+  nit: string;
+  activo: boolean;
 }
  
 interface CertificateType {
