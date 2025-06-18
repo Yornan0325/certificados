@@ -8,7 +8,6 @@ import { PrivateRoute } from "./RestrictedAccess/PrivateRoute";
 import { useHandleAuthSigOut } from "./Hook/useHandleAuthSigOut";
 import { useHandleUser } from "./Hook/useUser";
 import StaffList from "./Components/UserHome/StaffList";
-import NewProject from "./Components/NewProject/NewProject";
 import RecoverPasswordPage from "./UserForm/FormModules/RecoverPasswordPage";
 import AdminApprovalModal from "./Components/Modal/AdminApprovalModal";
 import { useState } from "react";
@@ -33,7 +32,6 @@ const App: React.FC = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/registro" element={<SignUpPage />} />
         <Route path="/administrador/:routeParams" element={<StaffList />} />
-        <Route path="/administrador/nuevo/:routeParams" element={<NewProject />} />
         <Route path="/administrador/agregar-colaborador/:routeParams" element={<AddCollaborator />} />
         <Route path="/administrador/editar-colaborador/:routeParams" element={<EditCollaborator />} />
 

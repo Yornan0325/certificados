@@ -10,6 +10,7 @@ import {
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useUserStore } from "../../Context/context";
 import { Link } from "react-router-dom";
+import NewProject from "../NewProject/NewProject";
 
 type Props = {
   name: string;
@@ -38,12 +39,12 @@ const NavBarHome = ({ imgUser, name, dimention, logoState, showItem }: Props) =>
   const navigation =
     userRole === "administrador"
       ? [
-        { name: "Consorcios", href: "/administrador/nuevo/1", current: false },
+        { name: "Consorcios", href: "#", current: false,  action: () => setIsModalOpen(true) },
         { name: "Solicitudes para aprobación", href: "#", current: false, action: () => setIsModalOpen(true) }
       ]
       : userRole === "auxiliar"
         ? [
-          { name: "Consorcios", href: "/administrador/nuevo/1", current: false }
+          { name: "Consorcios", href: "#", current: false, action: () => setIsModalOpen(true) }
         ]
         : [];
 
@@ -185,6 +186,7 @@ const NavBarHome = ({ imgUser, name, dimention, logoState, showItem }: Props) =>
 
           {/* Modal de Usuarios Pendientes */}
           {isModalOpen && <AdminApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
+          {isModalOpen && <NewProject isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
         </>
       )}
     </Disclosure>
