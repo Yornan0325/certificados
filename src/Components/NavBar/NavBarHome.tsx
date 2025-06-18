@@ -23,12 +23,17 @@ type Props = {
 const NavBarHome = ({ imgUser, name, dimention, logoState, showItem }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { dataUser, openModal } = useUserStore();
+  const [activeModal, setActiveModal] = useState<null | "consorcio" | "solicitudes">(null);
 
   // Obtener el rol del usuario
   const userRole = dataUser.length > 0 ? dataUser[0].role : "siso";
 
   const handleOpenModal = () => openModal(true);
 
+  const handleNavigationClick = (modal: typeof activeModal) => {
+    setActiveModal(modal);
+    setIsModalOpen(true);
+  };
   // Solo mostrar estas opciones si el usuario es ADMIN
   // const navigation = userRole === "administrador" ? [
   //   { name: "Consorcios", href: "/administrador/nuevo/1", current: false },
@@ -39,8 +44,8 @@ const NavBarHome = ({ imgUser, name, dimention, logoState, showItem }: Props) =>
   const navigation =
     userRole === "administrador"
       ? [
-        { name: "Consorcios", href: "#", current: false,  action: () => setIsModalOpen(true) },
-        { name: "Solicitudes para aprobación", href: "#", current: false, action: () => setIsModalOpen(true) }
+        { name: "Consorcios", href: "#", current: false, action: () => handleNavigationClick("consorcio"), modal: "consorcio" },
+        { name: "Solicitudes para aprobación", href: "#", current: false, action: () => handleNavigationClick("solicitudes"), modal: "solicitudes" }
       ]
       : userRole === "auxiliar"
         ? [
@@ -185,8 +190,15 @@ const NavBarHome = ({ imgUser, name, dimention, logoState, showItem }: Props) =>
           </DisclosurePanel>
 
           {/* Modal de Usuarios Pendientes */}
-          {isModalOpen && <AdminApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
-          {isModalOpen && <NewProject isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
+          {/* {isModalOpen && name  && <AdminApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />} */}
+          {/* {isModalOpen &&  name === "Consorcio" && <NewProject isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />} */}
+          {isModalOpen && activeModal === "consorcio" && (
+            <NewProject isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+          )}
+
+          {isModalOpen && activeModal === "solicitudes" && (
+            <AdminApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+          )}
         </>
       )}
     </Disclosure>

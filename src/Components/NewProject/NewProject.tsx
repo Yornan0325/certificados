@@ -14,9 +14,9 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
     activo: true,
   });
   // Seleciona el proyecto con el id [uid]
-  const [selectedProjectUid, setSelectedProjectUid] = useState<string | null>(
-    null
-  );
+
+  const [selectedProjectUid, setSelectedProjectUid] = useState<string | null>(null);
+  const [filteredProjects, setFilteredProjects] = useState<ProjectType[]>([]);
 
   const { createProject, updateProject, loading, error } = useManageProjects();
   const { projects } = useUserStore();
@@ -28,7 +28,10 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
 
     if (mode === "create") {
       setProjectData({
-        projectTitle: ""
+        projectTitle: "",
+        nit: "",
+        uid: "",
+        activo: true,
       });
       setSelectedProjectUid(null);
     }
@@ -45,7 +48,6 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
     const selectedProject = projects.find((proj) => proj.uid === selectedUid);
     if (selectedProject) {
       setProjectData({
-        uid: selectedProject.uid,
         projectTitle: selectedProject.projectTitle,
         nit: (selectedProject as any).nit || "",
         uid: selectedUid,
@@ -53,9 +55,11 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
       });
     }
   };
+  // const [filteredProjects, setFilteredProjects] = useState<ProjectType[]>([]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (isUpdate && selectedProjectUid) {
       await updateProject(selectedProjectUid, {
         projectTitle: projectData.projectTitle,
@@ -79,16 +83,13 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
       });
       console.log("Proyecto creado con éxito");
     }
-
-    setProjectData({
-      uid: "",
-      projectTitle: "",
-      nit: "",
-      uid: "",
-      activo: true,
-    });
-    setSelectedProjectUid(null);
-  };
+  }
+  useEffect(() => {
+    // Filtrar proyectos activos al abrir el modal
+    if (isOpen) {
+      setFilteredProjects(projects.filter((proj) => proj.activo !== false));
+    }
+  }, [isOpen, projects]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -105,11 +106,9 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
       <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
         <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
           {/* Selector para elegir entre crear o actualizar */}
+
           <div className="mb-5">
-            <label
-              htmlFor="mode"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
+            <label htmlFor="mode" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               Modo
             </label>
             <select
@@ -117,27 +116,27 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
               onChange={handleModeChange}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             >
-              <option value="create">Crear proyecto</option>
-              <option value="update">Actualizar proyecto</option>
+              <option value="create">Crear Proyecto</option>
+              <option value="update">Actualizar Proyecto</option>
+              <option value="deactivate">Desactivar Proyecto</option>
             </select>
           </div>
 
           {/* Mostrar selector de proyectos si se está en modo actualizar */}
-          {isUpdate && (
+
+          {(isUpdate || isDeactivate) && (
             <div className="mb-5">
-              <label
-                htmlFor="selectProject"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Elige el proyecto
+              <label htmlFor="selectProject" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Seleccionar Proyecto
               </label>
               <select
                 id="selectProject"
                 onChange={handleProjectSelect}
+                value={selectedProjectUid || ""}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
                 <option value="">Seleccione un proyecto</option>
-                {projects.map((project) => (
+                {filteredProjects.map((project) => (
                   <option key={project.uid} value={project.uid}>
                     {project.projectTitle}
                   </option>
@@ -145,13 +144,10 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
               </select>
             </div>
           )}
-
           {/* Campos de entrada para el título, descripción y número */}
+
           <div className="mb-5">
-            <label
-              htmlFor="projectTitle"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
+            <label htmlFor="projectTitle" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               Nombre del proyecto
             </label>
             <input
@@ -160,9 +156,11 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
               name="projectTitle"
               value={projectData.projectTitle}
               onChange={handleChange}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              disabled={isDeactivate}
+              className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${isDeactivate ? "opacity-70 cursor-not-allowed" : ""
+                } dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
               placeholder="Proyecto..."
-              required
+              required={!isDeactivate}
             />
           </div>
 
@@ -206,15 +204,47 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
         />
       </div> */}
 
+          <div className="mb-5">
+            <label htmlFor="nit" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              NIT (-) DÍGITO DE VERIFICACIÓN
+            </label>
+            <input
+              type="text"
+              id="nit"
+              name="nit"
+              value={projectData.nit}
+              onChange={handleChange}
+              disabled={isDeactivate}
+              className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${isDeactivate ? "opacity-70 cursor-not-allowed" : ""
+                } dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+              placeholder="Ej: 123456789 - 1"
+              required={!isDeactivate}
+            />
+          </div>
+          {isUpdate && (
+            <div className="mb-5">
+              <label htmlFor="activo" className="inline-flex items-center space-x-2 text-sm font-medium text-gray-900 dark:text-white">
+                <input
+                  type="checkbox"
+                  id="activo"
+                  name="activo"
+                  checked={projectData.activo}
+                  onChange={(e) => setProjectData((prev) => ({ ...prev, activo: e.target.checked }))}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span>Proyecto activo</span>
+              </label>
+            </div>
+          )}
+
           <button
             type="submit"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
-            {loading ? "Procesando..." : isUpdate ? "Actualizar" : "Crear"}
+            {loading ? "Procesando..." : isUpdate ? "Actualizar" : isDeactivate ? "Desactivar" : "Crear"}
           </button>
 
-          {error && <p className="text-red-500 mt-2">{error}</p>}
-        </form>
+          {error && <p className="text-red-500 mt-2">{error}</p>}        </form>
         <button className="mt-4 bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded" onClick={onClose}>
           Cerrar
         </button>
@@ -224,3 +254,4 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
 };
 
 export default NewProject;
+
