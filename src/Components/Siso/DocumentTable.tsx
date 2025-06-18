@@ -4,7 +4,7 @@ import useCollaborators from "../../Hook/useCollaborators";
 import { uploadPDF } from "../../ServicesFirebase/colaboradoresService";
 
 const DocumentTable = () => {
-  const collaborators = useCollaborators(); // ← ya usa el consorcio automáticamente
+  const collaborators = useCollaborators(); 
 
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedType, setSelectedType] = useState("");
