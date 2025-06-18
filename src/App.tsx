@@ -32,6 +32,7 @@ const App: React.FC = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/registro" element={<SignUpPage />} />
         <Route path="/administrador/:routeParams" element={<StaffList />} />
+        <Route path="/administrador/nuevo/:routeParams" element={<NewProject />} />
         <Route path="/administrador/agregar-colaborador/:routeParams" element={<AddCollaborator />} />
         <Route path="/administrador/editar-colaborador/:routeParams" element={<EditCollaborator />} />
 
@@ -63,19 +64,6 @@ const App: React.FC = () => {
             </PrivateRoute>
           }
         />
-        {/* <Route
-          path="/auxiliar"
-          element={
-            <PrivateRoute role={["auxiliar"]}>
-              <GuestHomePage />
-              <button onClick={handleLogOut} className="btn btn-logout">
-                Salir
-              </button>
-              <h1 className="mx-12 my-12 bg-red-500">Siso</h1>
-              <SignOutButton/> 
-            </PrivateRoute>
-          }
-        /> */}
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  collection,
-  getDocs,
-  doc,
-  getDoc,
-  updateDoc,
-} from "firebase/firestore";
+import {collection,getDocs,doc,getDoc,updateDoc,} from "firebase/firestore";
 import { db } from "../../ServicesFirebase/firebase";
 import { Pencil, Check } from "lucide-react";
 

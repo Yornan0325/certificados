@@ -1,44 +1,44 @@
-import React, { useState } from "react";
-import useManageProjects from "../../Hook/useManageProjects"; // Asegúrate de que la ruta sea correcta
-// import { useGetProjectsFromFirestore } from "../../Hook/useGetProjectsFromFirestore"; // Hook para obtener proyectos
+import React, { useState, useEffect } from "react";
+import useManageProjects from "../../Hook/useManageProjects"; 
 import { useUserStore } from "../../Context/context";
 import { ProjectType } from "../../TypeScript/Types/types";
 
-// interface NewProjectProps {
-//   onClose: () => void;
-// }
-
-const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+const NewProject: React.FC = () => {
   // Estado para determinar si se va a actualizar
-
   const [isUpdate, setIsUpdate] = useState(false);
-  const [projectData, setProjectData] = useState<ProjectType>({
+  const [isDeactivate, setIsDeactivate] = useState(false); 
+  const [projectData, setProjectData] = useState<ProjectType & { nit: string; activo?: boolean }>({
     uid: "",
     projectTitle: "",
+    nit: "",
+    activo: true,
   });
   // Seleciona el proyecto con el id [uid]
   const [selectedProjectUid, setSelectedProjectUid] = useState<string | null>(
     null
   );
-
+ 
   const { createProject, updateProject, loading, error } = useManageProjects();
-  // Obtiene todos los proyectos para mostrarlos en el select
   const { projects } = useUserStore();
 
-  // Manejador para cambiar entre crear proyecto y actualizarlo
   const handleModeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const mode = e.target.value;
     setIsUpdate(mode === "update");
+    setIsDeactivate(mode === "deactivate"); 
+
     if (mode === "create") {
       setProjectData({
-        uid: "",
         projectTitle: ""
       });
       setSelectedProjectUid(null);
     }
+
+    if (mode === "update" || mode === "deactivate") {
+      setFilteredProjects(projects.filter((proj) => proj.activo !== false));
+
+    }
   };
 
-  // Manejador para seleccionar un proyecto y cargar los datos
   const handleProjectSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedUid = e.target.value;
     setSelectedProjectUid(selectedUid);
@@ -47,40 +47,49 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
       setProjectData({
         uid: selectedProject.uid,
         projectTitle: selectedProject.projectTitle,
-        // projectDescription: selectedProject.projectDescription || "",
-        // projectNumber: selectedProject.projectNumber || 0,
+        nit: (selectedProject as any).nit || "",
+        uid: selectedUid,
+        activo: (selectedProject as any).activo ?? true,
       });
     }
   };
 
-  // Manejador para el envío del formulario
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isUpdate && selectedProjectUid) {
-      // Si se está actualizando y hay un UID seleccionado, actualiza el proyecto
       await updateProject(selectedProjectUid, {
         projectTitle: projectData.projectTitle,
-        // projectDescription: projectData.projectDescription,
-        // projectNumber: projectData.projectNumber,
+        nit: projectData.nit,
+        activo: projectData.activo,
       });
       console.log("Proyecto actualizado con éxito");
+    } else if (isDeactivate && selectedProjectUid) {
+      await updateProject(selectedProjectUid, {
+        projectTitle: projectData.projectTitle,
+        nit: projectData.nit,
+        activo: false,
+      });
+      console.log("Proyecto desactivado con éxito");
     } else {
-      // De lo contrario, crea un nuevo proyecto
-      await createProject(projectData);
+      await createProject({
+        projectTitle: projectData.projectTitle,
+        nit: projectData.nit,
+        uid: "",
+        activo: projectData.activo,
+      });
       console.log("Proyecto creado con éxito");
     }
 
-    // Reiniciar los campos del formulario
     setProjectData({
       uid: "",
       projectTitle: "",
-      // projectDescription: "",
-      // projectNumber: 0,
+      nit: "",
+      uid: "",
+      activo: true,
     });
     setSelectedProjectUid(null);
   };
 
-  // Manejador para cambiar los valores de los inputs
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProjectData((prevData) => ({
@@ -92,73 +101,70 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
   if (!isOpen) return null;
   
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
-        <h2 className="text-lg font-bold mb-4">Consorcios</h2>
-        <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
-          {/* Selector para elegir entre crear o actualizar */}
-          <div className="mb-5">
-            <label
-              htmlFor="mode"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Modo
-            </label>
-            <select
-              id="mode"
-              onChange={handleModeChange}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
-              <option value="create">Crear proyecto</option>
-              <option value="update">Actualizar proyecto</option>
-            </select>
-          </div>
+    <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
+      {/* Selector para elegir entre crear o actualizar */}
+      <div className="mb-5">
+        <label
+          htmlFor="mode"
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >
+          Modo
+        </label>
+        <select
+          id="mode"
+          onChange={handleModeChange}
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >
+          <option value="create">Crear proyecto</option>
+          <option value="update">Actualizar proyecto</option>
+        </select>
+      </div>
 
-          {/* Mostrar selector de proyectos si se está en modo actualizar */}
-          {isUpdate && (
-            <div className="mb-5">
-              <label
-                htmlFor="selectProject"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Elige el proyecto
-              </label>
-              <select
-                id="selectProject"
-                onChange={handleProjectSelect}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              >
-                <option value="">Seleccione un proyecto</option>
-                {projects.map((project) => (
-                  <option key={project.uid} value={project.uid}>
-                    {project.projectTitle}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+      {/* Mostrar selector de proyectos si se está en modo actualizar */}
+      {isUpdate && (
+        <div className="mb-5">
+          <label
+            htmlFor="selectProject"
+            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >
+            Elige el proyecto
+          </label>
+          <select
+            id="selectProject"
+            onChange={handleProjectSelect}
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
+            <option value="">Seleccione un proyecto</option>
+            {projects.map((project) => (
+              <option key={project.uid} value={project.uid}>
+                {project.projectTitle}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
-          {/* Campos de entrada para el título, descripción y número */}
-          <div className="mb-5">
-            <label
-              htmlFor="projectTitle"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Nombre del proyecto
-            </label>
-            <input
-              type="text"
-              id="projectTitle"
-              name="projectTitle"
-              value={projectData.projectTitle}
-              onChange={handleChange}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Proyecto..."
-              required
-            />
-          </div>
+      {/* Campos de entrada para el título, descripción y número */}
+      <div className="mb-5">
+        <label
+          htmlFor="projectTitle"
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >
+          Nombre del proyecto
+        </label>
+        <input
+          type="text"
+          id="projectTitle"
+          name="projectTitle"
+          value={projectData.projectTitle}
+          onChange={handleChange}
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="Proyecto..."
+          required
+        />
+      </div>
 
-          {/* <div className="mb-5">
+      {/* <div className="mb-5">
         <label
           htmlFor="projectDescription"
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -167,16 +173,20 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
         </label>
         <input
           type="text"
-          id="projectDescription"
-          name="projectDescription"
-          value={projectData.projectDescription}
+          id="nit"
+          name="nit"
+          value={projectData.nit}
           onChange={handleChange}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Descripción..."
+          disabled={isDeactivate}
+          className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
+            isDeactivate ? "opacity-70 cursor-not-allowed" : ""
+          } dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+          placeholder="Ej: 123456789 - 1"
+          required={!isDeactivate}
         />
-      </div> */}
+      </div>
 
-          {/* <div className="mb-5">
+      {/* <div className="mb-5">
         <label
           htmlFor="projectNumber"
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -194,12 +204,12 @@ const NewProject = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
         />
       </div> */}
 
-          <button
-            type="submit"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            {loading ? "Procesando..." : isUpdate ? "Actualizar" : "Crear"}
-          </button>
+      <button
+        type="submit"
+        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        {loading ? "Procesando..." : isUpdate ? "Actualizar" : "Crear"}
+      </button>
 
           {error && <p className="text-red-500 mt-2">{error}</p>}
         </form>
