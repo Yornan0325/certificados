@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { FaLock, FaDownload, FaClock } from "react-icons/fa";
 import useCollaborators from "../../Hook/useCollaborators";
-import { uploadPDF, getPDFUrl } from "../../ServicesFirebase/colaboradoresService";
+import { uploadPDF } from "../../ServicesFirebase/colaboradoresService";
 
 const DocumentTable = () => {
-  const projectId = "Ti58DXDqEYKuCbBk9tXGw";
-  const collaborators = useCollaborators(projectId);
+  const collaborators = useCollaborators(); // ← ya usa el consorcio automáticamente
+
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [uploadedDocs, setUploadedDocs] = useState<{ [key: string]: boolean }>({});
@@ -64,7 +64,6 @@ const DocumentTable = () => {
               <th className="px-4 py-2 border-b">Solicitud</th>
               <th className="px-4 py-2 border-b">Certificado</th>
               <th className="px-4 py-2 border-b">Estado</th>
-              <th className="px-4 py-2 border-b">Historial</th>
             </tr>
           </thead>
           <tbody>
@@ -83,7 +82,11 @@ const DocumentTable = () => {
                   <FaDownload className="inline mr-2" />
                   <span className="text-sm">10/12/2024</span>
                 </td>
-                <td className={`px-4 py-2 border-b font-bold ${isComplete(colab.id) ? "text-green-600" : "text-yellow-500"}`}>
+                <td
+                  className={`px-4 py-2 border-b font-bold ${
+                    isComplete(colab.id) ? "text-green-600" : "text-yellow-500"
+                  }`}
+                >
                   {isComplete(colab.id) ? "Completo" : "Pendiente"}
                 </td>
                 <td className="px-4 py-2 border-b text-gray-600">
