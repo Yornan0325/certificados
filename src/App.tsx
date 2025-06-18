@@ -32,7 +32,6 @@ const App: React.FC = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/registro" element={<SignUpPage />} />
         <Route path="/administrador/:routeParams" element={<StaffList />} />
-        <Route path="/administrador/nuevo/:routeParams" element={<NewProject />} />
         <Route path="/administrador/agregar-colaborador/:routeParams" element={<AddCollaborator />} />
         <Route path="/administrador/editar-colaborador/:routeParams" element={<EditCollaborator />} />
 
