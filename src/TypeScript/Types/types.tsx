@@ -1,11 +1,12 @@
 import type { User } from "firebase/auth";
 interface UserType {
-  createdAt: Date;
+  createdAt?: Date;
   email: string;
   name: string;
   role: string;
   uid: string;
   check:boolean
+  consorcio: string;
 }
 
 interface ModalType {
