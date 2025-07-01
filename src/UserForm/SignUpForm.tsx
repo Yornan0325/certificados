@@ -18,6 +18,7 @@ const SignUpForm: React.FC<{ LIST_DATA_SIGNUP: LoginFields[] }> = ({ LIST_DATA_S
     e.preventDefault();
     // Llamar a la función de registro con los datos del formulario
     await handleSignUp(formValues.email, formValues.password, formValues.username,setIsLoading,setError);
+  // console.log(formValues)
   };
 
   return (

@@ -6,16 +6,18 @@ import { uploadPDF, getPDFUrl } from "../../ServicesFirebase/colaboradoresServic
 const DocumentTable = () => {
   const projectId = "Ti58DXDqEYKuCbBk9tXGw";
   const collaborators = useCollaborators(projectId);
-  const [selectedUser, setSelectedUser] = useState("");
+  const [selectedUser, setSelectedUser] = useState("Juan Perez");
   const [selectedType, setSelectedType] = useState("");
   const [uploadedDocs, setUploadedDocs] = useState<{ [key: string]: boolean }>({});
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0] || !selectedUser || !selectedType) return;
+    // Verificar si el usuario ya tiene el documento subido
+    const docKey = `${selectedUser}-${selectedType}`;
     const url = await uploadPDF(e.target.files[0], selectedUser, selectedType);
     setUploadedDocs((prev) => ({
       ...prev,
-      [`${selectedUser}-${selectedType}`]: true,
+      [docKey]: true,
     }));
     console.log("Archivo subido:", url);
   };
@@ -27,6 +29,7 @@ const DocumentTable = () => {
     <>
       <div className="flex gap-4 m-4 items-center">
         <input
+        type="select"
           list="colaboradores"
           placeholder="Buscar colaborador..."
           className="border px-4 py-2 rounded-lg w-60"

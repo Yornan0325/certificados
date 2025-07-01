@@ -56,19 +56,22 @@ export const agregarColaboradorAProyecto = async (
   }
 ) => {
   try {
-    // Verificar duplicado antes de guardar
+    console.log("Intentando agregar colaborador:", colaborador);
+    console.log("Proyecto ID:", proyectoId);
+    
     const duplicado = await verificarDuplicadoEnProyecto(
       proyectoId,
       colaborador.idNumber
     );
 
     if (duplicado) {
+      console.warn("Colaborador duplicado detectado:", colaborador.idNumber);
       throw new Error("Ya existe un colaborador con esa cédula en el consorcio.");
     }
 
-    // Guardar en la subcolección correcta
     const ref = collection(db, "proyectos", proyectoId, "Colaboradores");
     await addDoc(ref, colaborador);
+    console.log("Colaborador agregado correctamente a Firebase");
   } catch (error) {
     console.error("Error al agregar colaborador:", error);
     throw error;

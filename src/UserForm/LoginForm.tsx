@@ -7,38 +7,83 @@ import { useUserStore } from "../Context/context";
 import { useNavigate } from "react-router-dom";
 import { useHandleAuthSignIn } from "../Hook/useHandleAuthSignIn";
 import useFormInput from "../Hook/useFormInput";
+import { auth, db, doc, getDoc } from "../ServicesFirebase/firebase";
+
+
 
 const LoginForm: React.FC<{ LIST_DATA_LOGIN: LoginFields[] }> = ({
   LIST_DATA_LOGIN,
 }) => {
   const { handleSignIn } = useHandleAuthSignIn();
-  const { formValues, isLoading, setIsLoading, setError, error, handleChange } =
-    useFormInput({
-      initialState: { email: "", password: "" },
-    });
-  const { userAuth, userRole } = useUserStore();
+  const {
+    formValues,
+    isLoading,
+    setIsLoading,
+    setError,
+    error,
+    handleChange,
+  } = useFormInput({
+    initialState: { email: "", password: "" },
+  });
+
+  const {
+    userAuth,
+    userRole,
+    dataUser,
+    setDataAuthenticatedUser,
+  } = useUserStore();
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userAuth?.email && userRole) {
-      if (userRole === "admin") {
-        navigate("/admin");
-      } else if (userRole === "invitado") {
-        navigate("/invitado");
-      } else {
-        navigate("/");
-      }
+    if (!userAuth?.email || !userRole) return;
+
+    const currentUser = dataUser.find((user) => user.email === userAuth.email);
+    const isChecked = currentUser?.check === true;
+
+    if (userRole === "administrador" && isChecked) {
+      navigate("/administrador");
+    } else if (userRole === "siso" && isChecked) {
+      navigate("/siso");
+    } else if (userRole === "auxiliar" && isChecked) {
+      navigate("/auxiliar");
+    } else {
+      navigate("/");
     }
-  }, [userRole, navigate, userAuth?.email]);
+  }, [userRole, navigate, userAuth?.email, dataUser]);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     await handleSignIn(
       formValues.email,
       formValues.password,
       setIsLoading,
       setError
     );
+
+    const currentUser = auth.currentUser;
+
+    if (currentUser?.email) {
+      const docRef = doc(db, "usuarios", currentUser.email);
+      const userSnap = await getDoc(docRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+
+        // Guardar los datos completos del usuario autenticado (incluyendo consorcio)
+        setDataAuthenticatedUser([
+          {
+            uid: userData.uid,
+            email: userData.email,
+            name: userData.name,
+            role: userData.role,
+            consorcio: userData.consorcio,
+            check: userData.check,
+          },
+        ]);
+      }
+    }
   };
 
   return (

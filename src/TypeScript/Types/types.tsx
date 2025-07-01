@@ -1,12 +1,12 @@
 import type { User } from "firebase/auth";
-
 interface UserType {
-  createdAt: Date;
+  createdAt?: Date;
   email: string;
   name: string;
   role: string;
   uid: string;
   check:boolean
+  consorcio: string;
 }
 
 interface ModalType {
@@ -27,6 +27,8 @@ interface InputFormProps {
 interface ProjectType {
   projectTitle: string;
   uid: string;
+  nit: string;
+  activo: boolean;
 }
  
 interface CertificateType {
@@ -65,7 +67,7 @@ interface UserContext {
 
 type UpdateUserAuth = (newState: null | User) => void;
 type UserAuth = null | User;
-type UserRole = "admin" | "invitado" | null;
+type UserRole = "administrador" | "siso" | "auxiliar" | null;
 
 export type {
   UserContext,

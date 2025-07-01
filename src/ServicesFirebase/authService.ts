@@ -125,7 +125,7 @@ export const rejectUser = async (userId: string) => {
 export const getConsorcios = async (): Promise<string[]> => {
   try {
     const snapshot = await getDocs(collection(db, "proyectos"));
-    return snapshot.docs.map((doc) => doc.data().nombre as string);
+    return snapshot.docs.map((doc) => doc.data().projectTitle as string);
   } catch (error) {
     console.error("Error al obtener consorcios:", error);
     return [];

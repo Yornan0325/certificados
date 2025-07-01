@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-// Define the types for the custom props
+// Define las props
 interface HollowSpinnerProps {
   size: number;
   color: string;
@@ -11,8 +11,11 @@ interface HollowSpinnerProps {
   animationDelay: number;
 }
 
-// Use the props type in `styled.div`
-const HollowSpinner = styled.div<HollowSpinnerProps>`
+// Evita pasar props personalizadas al DOM
+const HollowSpinner = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !['dotsNum', 'animationDelay', 'animationDuration'].includes(prop),
+})<HollowSpinnerProps>`
   height: ${(props) => props.size}px;
   width: ${(props) => 2 * props.size * props.dotsNum}px;
 
@@ -28,9 +31,9 @@ const HollowSpinner = styled.div<HollowSpinnerProps>`
     border-radius: 50%;
     float: left;
     transform: scale(0);
-    animation: hollow-dots-spinner-animation
-      ${(props) => props.animationDuration}ms ease infinite 0ms;
+    animation: hollow-dots-spinner-animation ${(props) => props.animationDuration}ms ease infinite 0ms;
   }
+
   .dot:nth-child(1) {
     animation-delay: calc(${(props) => props.animationDelay}ms * 1);
   }
@@ -40,6 +43,7 @@ const HollowSpinner = styled.div<HollowSpinnerProps>`
   .dot:nth-child(3) {
     animation-delay: calc(${(props) => props.animationDelay}ms * 3);
   }
+
   @keyframes hollow-dots-spinner-animation {
     50% {
       transform: scale(1);
@@ -87,10 +91,10 @@ const HollowDotsSpinner: React.FC<{
       size={size}
       color={color}
       animationDuration={animationDuration}
-      className={`hollow-dots-spinner${className ? ' ' + className : ''}`}
-      style={style}
       dotsNum={dotsNum}
       animationDelay={animationDelay}
+      className={`hollow-dots-spinner${className ? ' ' + className : ''}`}
+      style={style}
       {...props}
     >
       {generateDots(dotsNum)}
