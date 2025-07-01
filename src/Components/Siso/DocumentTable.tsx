@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { FaLock, FaDownload, FaClock } from "react-icons/fa";
 import useCollaborators from "../../Hook/useCollaborators";
-import { uploadPDF } from "../../ServicesFirebase/colaboradoresService";
+import { uploadPDF, getPDFUrl } from "../../ServicesFirebase/colaboradoresService";
 
 const DocumentTable = () => {
-  const collaborators = useCollaborators();
+  const collaborators = useCollaborators(); 
 
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedType, setSelectedType] = useState("");
@@ -12,10 +12,12 @@ const DocumentTable = () => {
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0] || !selectedUser || !selectedType) return;
+    // Verificar si el usuario ya tiene el documento subido
+    const docKey = `${selectedUser}-${selectedType}`;
     const url = await uploadPDF(e.target.files[0], selectedUser, selectedType);
     setUploadedDocs((prev) => ({
       ...prev,
-      [`${selectedUser}-${selectedType}`]: true,
+      [docKey]: true,
     }));
     console.log("Archivo subido:", url);
   };
@@ -27,6 +29,7 @@ const DocumentTable = () => {
     <>
       <div className="flex gap-4 m-4 items-center">
         <input
+        type="select"
           list="colaboradores"
           placeholder="Buscar colaborador..."
           className="border px-4 py-2 rounded-lg w-60"
@@ -69,6 +72,7 @@ const DocumentTable = () => {
               <th className="px-4 py-2 border-b">Solicitud</th>
               <th className="px-4 py-2 border-b">Certificado</th>
               <th className="px-4 py-2 border-b">Estado</th>
+              <th className="px-4 py-2 border-b">Historial</th>
             </tr>
           </thead>
           <tbody>
@@ -87,11 +91,7 @@ const DocumentTable = () => {
                   <FaDownload className="inline mr-2" />
                   <span className="text-sm">10/12/2024</span>
                 </td>
-                <td
-                  className={`px-4 py-2 border-b font-bold ${
-                    isComplete(colab.id) ? "text-green-600" : "text-yellow-500"
-                  }`}
-                >
+                <td className={`px-4 py-2 border-b font-bold ${isComplete(colab.id) ? "text-green-600" : "text-yellow-500"}`}>
                   {isComplete(colab.id) ? "Completo" : "Pendiente"}
                 </td>
               </tr>

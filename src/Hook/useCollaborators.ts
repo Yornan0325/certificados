@@ -3,7 +3,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../ServicesFirebase/firebase";
 import { useUserStore } from "../Context/context";
 
-const useCollaborators = () => {
+const useCollaborators = (projectId: string) => {
   const [collaborators, setCollaborators] = useState<any[]>([]);
   const { dataUser } = useUserStore();
 
