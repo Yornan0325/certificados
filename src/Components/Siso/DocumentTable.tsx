@@ -9,7 +9,6 @@ const DocumentTable = () => {
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [uploadedDocs, setUploadedDocs] = useState<{ [key: string]: boolean }>({});
-
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0] || !selectedUser || !selectedType) return;
     // Verificar si el usuario ya tiene el documento subido
