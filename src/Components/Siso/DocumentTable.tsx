@@ -4,7 +4,7 @@ import useCollaborators from "../../Hook/useCollaborators";
 import { uploadPDF } from "../../ServicesFirebase/colaboradoresService";
 
 const DocumentTable = () => {
-  const collaborators = useCollaborators(); 
+  const collaborators = useCollaborators();
 
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedType, setSelectedType] = useState("");
@@ -53,6 +53,11 @@ const DocumentTable = () => {
           Subir PDF
           <input type="file" accept="application/pdf" hidden onChange={handleUpload} />
         </label>
+
+        <button className="cursor-pointer px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 flex items-center gap-2">
+          <FaClock />
+          Historial
+        </button>
       </div>
 
       <div className="p-4 flex flex-col items-center">
@@ -88,11 +93,6 @@ const DocumentTable = () => {
                   }`}
                 >
                   {isComplete(colab.id) ? "Completo" : "Pendiente"}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-600">
-                  <button className="flex items-center gap-1 hover:text-blue-600">
-                    <FaClock /> Historial
-                  </button>
                 </td>
               </tr>
             ))}
